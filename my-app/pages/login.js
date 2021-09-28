@@ -1,6 +1,4 @@
 import Link from "next/link";
-import Head from "next/head";
-import Layout from "../component/layout";
 import React, { useState } from "react";
 import { Form, Input, Button, Radio, Checkbox } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
@@ -10,9 +8,22 @@ import styled from "styled-components";
 export const Heading = styled.h1`
   text-align: center;
   font-weight: bold;
-  font-size: 2.3em;
+  font-size: 2rem;
   letter-spacing: -2px;
   font-stretch: extra-condensed !important;
+  margin-top: 6rem;
+`;
+
+export const StyledForm = styled(Form)`
+  margin-left: 28rem;
+`;
+
+export const StyledInput = styled(Input)`
+  width: 28rem;
+`;
+
+export const StyledPassword = styled(Input.Password)`
+  width: 28rem;
 `;
 
 export const StyledButton = styled(Button)`
@@ -20,28 +31,27 @@ export const StyledButton = styled(Button)`
 `;
 
 export default function LoginPage() {
-  const [formLayout, setFormLayout] = useState("Student");
+  const [role, setRole] = useState("Student");
 
   return (
-    <Layout>
-      <Head>
-        <title>React Web</title>
-      </Head>
+    <div>
       <Heading>COURSE MANAGEMENT ASSISTANT</Heading>
-      <Form
-        layout={formLayout}
+
+      <StyledForm
+        layout={role}
         initialValues={{
-          layout: formLayout,
+          layout: role,
           remember: true,
         }}
       >
         <Form.Item name="layout">
-          <Radio.Group value={formLayout}>
+          <Radio.Group value={role}>
             <Radio.Button value="Student">Student</Radio.Button>
             <Radio.Button value="Teacher">Teacher</Radio.Button>
             <Radio.Button value="Manager">Manager</Radio.Button>
           </Radio.Group>
         </Form.Item>
+
         <Form.Item
           name="email"
           rules={[
@@ -55,11 +65,12 @@ export default function LoginPage() {
             },
           ]}
         >
-          <Input
+          <StyledInput
             placeholder="Please input email"
             prefix={<UserOutlined className="site-form-item-icon" />}
           />
         </Form.Item>
+
         <Form.Item
           name="password"
           rules={[
@@ -77,14 +88,16 @@ export default function LoginPage() {
             },
           ]}
         >
-          <Input.Password
+          <StyledPassword
             placeholder="Please input password"
             prefix={<LockOutlined className="site-form-item-icon" />}
           />
         </Form.Item>
+
         <Form.Item name="remember" valuePropName="checked">
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
+
         <Form.Item>
           <StyledButton type="primary">
             <Link href="/dashboard">
@@ -92,13 +105,14 @@ export default function LoginPage() {
             </Link>
           </StyledButton>
         </Form.Item>
+
         <Form.Item>
           No account?{" "}
           <Link href="/signup">
             <a>Sign up</a>
           </Link>
         </Form.Item>
-      </Form>
-    </Layout>
+      </StyledForm>
+    </div>
   );
 }
