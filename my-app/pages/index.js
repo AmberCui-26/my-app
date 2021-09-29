@@ -1,4 +1,5 @@
 import Link from "next/link";
+import "antd/dist/antd.css";
 
 export default function Home() {
   return (

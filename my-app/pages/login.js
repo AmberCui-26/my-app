@@ -1,118 +1,135 @@
 import Link from "next/link";
 import React, { useState } from "react";
-import { Form, Input, Button, Radio, Checkbox } from "antd";
+import { Form, Input, Button, Radio, Checkbox, Col, Row } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import "antd/dist/antd.css";
 import styled from "styled-components";
+import { AES } from "crypto-js";
+import { useRouter } from "next/dist/client/router";
+import axios from "axios";
 
 export const Heading = styled.h1`
   text-align: center;
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 1.8rem;
   letter-spacing: -2px;
   font-stretch: extra-condensed !important;
-  margin-top: 6rem;
-`;
-
-export const StyledForm = styled(Form)`
-  margin-left: 28rem;
-`;
-
-export const StyledInput = styled(Input)`
-  width: 28rem;
-`;
-
-export const StyledPassword = styled(Input.Password)`
-  width: 28rem;
+  margin-top: 10%;
 `;
 
 export const StyledButton = styled(Button)`
-  width: 28rem;
+  width: 100%;
 `;
 
 export default function LoginPage() {
-  const [role, setRole] = useState("Student");
+  const [form] = Form.useForm();
+  const [roles, setRole] = useState("student");
+  const router = useRouter();
+  const onFinish = (values) => {
+    const url = "https://cms.chtoma.com/api/login";
+    const params = {
+      ...values,
+      password: AES.encrypt(values.password, "cms").toString(),
+    };
+    axios({
+      method: "post",
+      url: url,
+      data: params,
+    })
+      .then((res) => {
+        console.log(res);
+        const { userInfo } = res;
+        localStorage.setItem("userInfo", userInfo);
+        router.push("dashboard");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <div>
       <Heading>COURSE MANAGEMENT ASSISTANT</Heading>
+      <Row justify="center">
+        <Col md={8} sm={24}>
+          <Form
+            role={roles}
+            form={form}
+            initialValues={{
+              role: roles,
+              remember: true,
+            }}
+            onFinish={onFinish}
+          >
+            <Form.Item name="role">
+              <Radio.Group value={roles}>
+                <Radio.Button value="student">Student</Radio.Button>
+                <Radio.Button value="teacher">Teacher</Radio.Button>
+                <Radio.Button value="manager">Manager</Radio.Button>
+              </Radio.Group>
+            </Form.Item>
 
-      <StyledForm
-        layout={role}
-        initialValues={{
-          layout: role,
-          remember: true,
-        }}
-      >
-        <Form.Item name="layout">
-          <Radio.Group value={role}>
-            <Radio.Button value="Student">Student</Radio.Button>
-            <Radio.Button value="Teacher">Teacher</Radio.Button>
-            <Radio.Button value="Manager">Manager</Radio.Button>
-          </Radio.Group>
-        </Form.Item>
+            <Form.Item
+              name="email"
+              rules={[
+                {
+                  type: "email",
+                  message: '"email" is not a valid email',
+                },
+                {
+                  required: true,
+                  message: '"email" is required',
+                },
+              ]}
+            >
+              <Input
+                type="email"
+                placeholder="Please input email"
+                prefix={<UserOutlined />}
+              />
+            </Form.Item>
 
-        <Form.Item
-          name="email"
-          rules={[
-            {
-              type: "email",
-              message: '"email" is not a valid email',
-            },
-            {
-              required: true,
-              message: '"email" is required',
-            },
-          ]}
-        >
-          <StyledInput
-            placeholder="Please input email"
-            prefix={<UserOutlined className="site-form-item-icon" />}
-          />
-        </Form.Item>
+            <Form.Item
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: '"password" is required',
+                },
+                {
+                  min: 4,
+                  message: '"password" must be between 4 and 16 characters',
+                },
+                {
+                  max: 16,
+                  message: '"password" must be between 4 and 16 characters',
+                },
+              ]}
+            >
+              <Input.Password
+                placeholder="Please input password"
+                prefix={<LockOutlined />}
+              />
+            </Form.Item>
 
-        <Form.Item
-          name="password"
-          rules={[
-            {
-              required: true,
-              message: '"password" is required',
-            },
-            {
-              min: 4,
-              message: '"password" must be between 4 and 16 characters',
-            },
-            {
-              max: 16,
-              message: '"password" must be between 4 and 16 characters',
-            },
-          ]}
-        >
-          <StyledPassword
-            placeholder="Please input password"
-            prefix={<LockOutlined className="site-form-item-icon" />}
-          />
-        </Form.Item>
+            <Form.Item name="remember" valuePropName="checked">
+              <Checkbox>Remember me</Checkbox>
+            </Form.Item>
 
-        <Form.Item name="remember" valuePropName="checked">
-          <Checkbox>Remember me</Checkbox>
-        </Form.Item>
+            <Form.Item>
+              <StyledButton type="primary" htmlType="submit">
+                Sign in
+              </StyledButton>
+            </Form.Item>
 
-        <Form.Item>
-          <StyledButton type="primary">
-            <Link href="/dashboard">
-              <a>Sign in</a>
-            </Link>
-          </StyledButton>
-        </Form.Item>
-
-        <Form.Item>
-          No account?{" "}
-          <Link href="/signup">
-            <a>Sign up</a>
-          </Link>
-        </Form.Item>
-      </StyledForm>
+            <Form.Item>
+              No account?{" "}
+              <Link href="/signup">
+                <a>Sign up</a>
+              </Link>
+            </Form.Item>
+          </Form>
+        </Col>
+      </Row>
     </div>
   );
 }
