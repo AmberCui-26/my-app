@@ -1,46 +1,90 @@
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Avatar } from "antd";
 import {
+  TeamOutlined,
+  DashboardOutlined,
+  MessageOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  FileAddOutlined,
+  DeploymentUnitOutlined,
+  ProjectOutlined,
+  ReadOutlined,
+  SolutionOutlined,
+  EditOutlined,
   UserOutlined,
-  LaptopOutlined,
-  NotificationOutlined,
 } from "@ant-design/icons";
+import Link from "next/link";
+import { useState } from "react";
 
 const { SubMenu } = Menu;
-const { Header, Content, Sider } = Layout;
+const { Header, Sider } = Layout;
 
 export default function FirstPost() {
+  const [collapsed, setCollapse] = useState(false);
   return (
     <Layout>
       <Header className="header">
         <div className="logo" />
         <Menu theme="dark" mode="horizontal">
-          <Menu.Item key="1">nav 1</Menu.Item>
+          <div
+            style={{ marginLeft: "15%" }}
+            // onClick={() => setCollapse(!collapsed)}
+          >
+            <MenuFoldOutlined />
+            {/* {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} */}
+          </div>
+
+          <div style={{ marginLeft: "80%" }}>
+            <Link href="/login">
+              <Avatar icon={<UserOutlined />}></Avatar>
+            </Link>
+          </div>
         </Menu>
       </Header>
-      <Layout>
-        <Sider width={200} height={100} className="site-layout-background">
-          <Menu
-            theme="dark"
-            mode="inline"
-            // style={{ height: "100%", borderRight: 0 }}
-          >
-            <Menu.Item key="sub1" icon={<UserOutlined />}>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider
+          collapsible
+          // collapsed={collapsed}
+          // onCollapse={(isCollapsed) => setCollapse(isCollapsed)}
+          width={200}
+          className="site-layout-background"
+        >
+          <Menu theme="dark" mode="inline">
+            <Menu.Item key="sub1" icon={<DashboardOutlined />}>
               Overview
             </Menu.Item>
-            <SubMenu key="sub2" icon={<LaptopOutlined />} title="Student">
-              <Menu.Item key="5">Student List</Menu.Item>
+
+            <SubMenu key="sub2" icon={<SolutionOutlined />} title="Student">
+              <Menu.Item key="1" icon={<TeamOutlined />}>
+                Student List
+              </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="sub3" icon={<NotificationOutlined />} title="Teacher">
-              <Menu.Item key="6">Teacher List</Menu.Item>
+            <SubMenu
+              key="sub3"
+              icon={<DeploymentUnitOutlined />}
+              title="Teacher"
+            >
+              <Menu.Item key="2" icon={<TeamOutlined />}>
+                Teacher List
+              </Menu.Item>
             </SubMenu>
 
-            <SubMenu key="sub4" icon={<NotificationOutlined />} title="Course">
-              <Menu.Item key="7">All Courses</Menu.Item>
-              <Menu.Item key="8">Add Course</Menu.Item>
-              <Menu.Item key="9">Edit Course</Menu.Item>
+            <SubMenu key="sub5" icon={<ReadOutlined />} title="Course">
+              <Menu.Item key="3" icon={<ProjectOutlined />}>
+                All Courses
+              </Menu.Item>
+              <Menu.Item key="4" icon={<FileAddOutlined />}>
+                Add Course
+              </Menu.Item>
+              <Menu.Item key="5" icon={<EditOutlined />}>
+                Edit Course
+              </Menu.Item>
             </SubMenu>
-            <Menu.Item key="10">Message</Menu.Item>
+
+            <Menu.Item key="6" icon={<MessageOutlined />}>
+              Message
+            </Menu.Item>
           </Menu>
         </Sider>
       </Layout>

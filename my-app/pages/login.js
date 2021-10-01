@@ -1,6 +1,6 @@
 import Link from "next/link";
 import React, { useState } from "react";
-import { Form, Input, Button, Radio, Checkbox, Col, Row } from "antd";
+import { Form, Input, Button, Radio, Checkbox, Col, Row, message } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { AES } from "crypto-js";
@@ -42,7 +42,7 @@ export default function LoginPage() {
         router.push("dashboard");
       })
       .catch((error) => {
-        console.log(error);
+        message.error("Please check your password or email");
       });
   };
 
