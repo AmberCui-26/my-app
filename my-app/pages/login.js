@@ -1,16 +1,16 @@
-import Link from "next/link";
-import React, { useState } from "react";
-import { Form, Input, Button, Radio, Checkbox, Col, Row, message } from "antd";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import styled from "styled-components";
-import { AES } from "crypto-js";
-import { useRouter } from "next/dist/client/router";
-import axios from "axios";
+import Link from 'next/link';
+import React, { useState } from 'react';
+import { Form, Input, Button, Radio, Checkbox, Col, Row, message } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
+import { AES } from 'crypto-js';
+import { useRouter } from 'next/dist/client/router';
+import axios from 'axios';
 
 export const Heading = styled.h1`
   text-align: center;
   font-weight: bold;
-  font-size: 1.8rem;
+  font-size: 220%;
   letter-spacing: -2px;
   font-stretch: extra-condensed !important;
   margin-top: 10%;
@@ -22,32 +22,32 @@ export const StyledButton = styled(Button)`
 
 export default function LoginPage() {
   const [form] = Form.useForm();
-  const [roles, setRole] = useState("student");
+  const [roles, setRole] = useState('student');
   const router = useRouter();
   const onFinish = (values) => {
-    const url = "https://cms.chtoma.com/api/login";
+    const url = 'https://cms.chtoma.com/api/login';
     const params = {
       ...values,
-      password: AES.encrypt(values.password, "cms").toString(),
+      password: AES.encrypt(values.password, 'cms').toString(),
     };
     axios({
-      method: "post",
+      method: 'post',
       url: url,
       data: params,
     })
       .then((res) => {
         console.log(res);
         const { userInfo } = res;
-        localStorage.setItem("userInfo", userInfo);
-        router.push("dashboard");
+        localStorage.setItem('userInfo', userInfo);
+        router.push('dashboard');
       })
       .catch((error) => {
-        message.error("Please check your password or email");
+        message.error('Please check your password or email');
       });
   };
 
   return (
-    <div>
+    <div style={{ height: '100%' }}>
       <Heading>COURSE MANAGEMENT ASSISTANT</Heading>
       <Row justify="center">
         <Col md={8} sm={24}>
@@ -72,7 +72,7 @@ export default function LoginPage() {
               name="email"
               rules={[
                 {
-                  type: "email",
+                  type: 'email',
                   message: '"email" is not a valid email',
                 },
                 {
@@ -111,7 +111,7 @@ export default function LoginPage() {
               />
             </Form.Item>
 
-            <Form.Item name="remember" valuePropName="checked">
+            <Form.Item name="remember">
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
 
@@ -122,9 +122,9 @@ export default function LoginPage() {
             </Form.Item>
 
             <Form.Item>
-              No account?{" "}
+              No account?{' '}
               <Link href="/signup">
-                <a>Sign up</a>
+                <a style={{ color: 'blue' }}>Sign up</a>
               </Link>
             </Form.Item>
           </Form>
