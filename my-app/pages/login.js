@@ -39,7 +39,7 @@ export default function LoginPage() {
         console.log(res);
         const { userInfo } = res;
         localStorage.setItem('userInfo', userInfo);
-        router.push('dashboard');
+        router.push('dashboard/student');
       })
       .catch((error) => {
         message.error('Please check your password or email');
@@ -111,7 +111,7 @@ export default function LoginPage() {
               />
             </Form.Item>
 
-            <Form.Item name="remember">
+            <Form.Item name="remember" valuePropName="checked">
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
 
