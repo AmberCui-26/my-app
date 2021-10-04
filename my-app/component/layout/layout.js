@@ -32,6 +32,10 @@ export const StyledBreadcrumb = styled(Breadcrumb)`
   padding: 0 30px;
 `;
 
+export const StyledText = styled.h3`
+  color: #fff;
+`;
+
 export default function AppLayout(props) {
   const router = useRouter();
   const [collapsed, setCollapse] = useState(false);
@@ -41,12 +45,6 @@ export default function AppLayout(props) {
     console.log(token);
     const authHeader = { Authorization: `Bearer ${token}` };
     axios
-      // ({
-      //   method: "post",
-      //   url: url,
-      //   data: {},
-      //   headers: authHeader,
-      // })
       .post(url, {}, { headers: authHeader })
       .then(() => {
         localStorage.clear();
@@ -67,7 +65,7 @@ export default function AppLayout(props) {
       >
         <Menu theme="dark" mode="inline">
           <Menu.Item>
-            <span style={{ color: "#fff", cursor: "pointer" }}>CMS</span>
+            <StyledText>CMS</StyledText>
           </Menu.Item>
 
           <Menu.Item key="sub1" icon={<DashboardOutlined />}>

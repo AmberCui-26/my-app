@@ -89,7 +89,8 @@ export const StyledButton = styled(Button)`
 `;
 
 export const StyledSearch = styled(Search)`
-  margin: 16px 16px;
+  margin: 16px;
+  margin-left: 629px;
   width: 200px;
 `;
 
