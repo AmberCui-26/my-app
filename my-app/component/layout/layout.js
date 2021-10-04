@@ -1,4 +1,4 @@
-import { Layout, Menu, Avatar } from 'antd';
+import { Layout, Menu, Avatar, Breadcrumb } from "antd";
 import {
   TeamOutlined,
   DashboardOutlined,
@@ -12,16 +12,14 @@ import {
   SolutionOutlined,
   EditOutlined,
   UserOutlined,
-} from '@ant-design/icons';
-import { useState } from 'react';
-import axios from 'axios';
-import styled from 'styled-components';
-import { Router } from 'next/dist/client/router';
+} from "@ant-design/icons";
+import { useState } from "react";
+import axios from "axios";
+import styled from "styled-components";
+import { useRouter } from "next/dist/client/router";
 
 const { SubMenu } = Menu;
-const { Header, Sider, Content } = Layout;
-const token = localStorage.getItem('token');
-const authHeader = { Authorization: `Bearer ${token}` };
+const { Header, Sider } = Layout;
 
 export const StyledLayoutHeader = styled(Header)`
   display: flex;
@@ -29,26 +27,37 @@ export const StyledLayoutHeader = styled(Header)`
   align-items: center;
 `;
 
+export const StyledBreadcrumb = styled(Breadcrumb)`
+  margin: 16px 0;
+  padding: 0 30px;
+`;
+
 export default function AppLayout(props) {
+  const router = useRouter();
   const [collapsed, setCollapse] = useState(false);
   const logOut = () => {
-    const url = 'https://cms.chtoma.com/api/logout';
-    axios({
-      method: 'post',
-      url: url,
-      data: {},
-      headers: authHeader,
-    })
+    const url = "https://cms.chtoma.com/api/logout";
+    const token = localStorage.getItem("token");
+    console.log(token);
+    const authHeader = { Authorization: `Bearer ${token}` };
+    axios
+      // ({
+      //   method: "post",
+      //   url: url,
+      //   data: {},
+      //   headers: authHeader,
+      // })
+      .post(url, {}, { headers: authHeader })
       .then(() => {
-        localStorage.removeItem('userInfo');
-        Router.push('/login');
+        localStorage.clear();
+        router.push("/login");
       })
       .catch((error) => {
         console.log(error);
       });
   };
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <Sider
         collapsible
         collapsed={collapsed}
@@ -58,7 +67,7 @@ export default function AppLayout(props) {
       >
         <Menu theme="dark" mode="inline">
           <Menu.Item>
-            <span style={{ color: '#fff', cursor: 'pointer' }}>CMS</span>
+            <span style={{ color: "#fff", cursor: "pointer" }}>CMS</span>
           </Menu.Item>
 
           <Menu.Item key="sub1" icon={<DashboardOutlined />}>
@@ -96,13 +105,13 @@ export default function AppLayout(props) {
       </Sider>
       <Layout>
         <StyledLayoutHeader className="header">
-          <div onClick={() => setCollapse(!collapsed)}>
+          <div aria-hidden="false" onClick={() => setCollapse(!collapsed)}>
             {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           </div>
 
           <Avatar icon={<UserOutlined />} onClick={logOut}></Avatar>
         </StyledLayoutHeader>
-        <Content>{props.children}</Content>
+        <StyledBreadcrumb>{props.children}</StyledBreadcrumb>
       </Layout>
     </Layout>
   );
