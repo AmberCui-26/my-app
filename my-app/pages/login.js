@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Radio, Checkbox, Col, Row, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
@@ -36,8 +36,11 @@ export default function LoginPage() {
       data: params,
     })
       .then((res) => {
-        console.log(res);
         const { userInfo } = res;
+        const token = res.data.data.token;
+        localStorage.setItem('token', token);
+        const t = localStorage.getItem('token');
+        console.log(t);
         localStorage.setItem('userInfo', userInfo);
         router.push('dashboard/student');
       })
@@ -45,6 +48,12 @@ export default function LoginPage() {
         message.error('Please check your password or email');
       });
   };
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!!token) {
+      router.push('/dashboard/student');
+    }
+  }, []);
 
   return (
     <div style={{ height: '100%' }}>

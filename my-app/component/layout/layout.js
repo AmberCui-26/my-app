@@ -13,14 +13,40 @@ import {
   EditOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import Link from 'next/link';
 import { useState } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
+import { Router } from 'next/dist/client/router';
 
 const { SubMenu } = Menu;
 const { Header, Sider, Content } = Layout;
+const token = localStorage.getItem('token');
+const authHeader = { Authorization: `Bearer ${token}` };
+
+export const StyledLayoutHeader = styled(Header)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
 
 export default function AppLayout(props) {
   const [collapsed, setCollapse] = useState(false);
+  const logOut = () => {
+    const url = 'https://cms.chtoma.com/api/logout';
+    axios({
+      method: 'post',
+      url: url,
+      data: {},
+      headers: authHeader,
+    })
+      .then(() => {
+        localStorage.removeItem('userInfo');
+        Router.push('/login');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider
@@ -69,25 +95,13 @@ export default function AppLayout(props) {
         </Menu>
       </Sider>
       <Layout>
-        <Header className="header">
-          <div className="logo" />
-          <Menu theme="dark" mode="horizontal">
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div
-                // style={{ marginLeft: '5%' }}
-                onClick={() => setCollapse(!collapsed)}
-              >
-                {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                {/* </div>
+        <StyledLayoutHeader className="header">
+          <div onClick={() => setCollapse(!collapsed)}>
+            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          </div>
 
-              <div> */}
-                <Link href="/login">
-                  <Avatar icon={<UserOutlined />}></Avatar>
-                </Link>
-              </div>
-            </div>
-          </Menu>
-        </Header>
+          <Avatar icon={<UserOutlined />} onClick={logOut}></Avatar>
+        </StyledLayoutHeader>
         <Content>{props.children}</Content>
       </Layout>
     </Layout>
