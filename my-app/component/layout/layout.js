@@ -34,6 +34,8 @@ export const StyledBreadcrumb = styled(Breadcrumb)`
 
 export const StyledText = styled.h3`
   color: #fff;
+  text-align: center;
+  margin: 0 12px;
 `;
 
 export default function AppLayout(props) {

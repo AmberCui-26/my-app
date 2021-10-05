@@ -47,9 +47,16 @@ const columns = [
   },
   {
     title: "Selected Curriculum",
-    dataIndex: "activity",
-    key: "activity",
-    // render: (courses) => courses["name"],
+    dataIndex: "courses",
+    render: (courses) => {
+      var arr = Object.keys(courses);
+      const names = [];
+      for (var i = 0; i < arr.length; i++) {
+        names[i] += courses[i].name + ",";
+      }
+      // console.log(names);
+      return names;
+    },
   },
   {
     title: "Student Type",
@@ -69,8 +76,14 @@ const columns = [
   },
   {
     title: "Join Time",
-    dataIndex: "time",
-    key: "time",
+    dataIndex: "createdAt",
+    render: (createdAt) => {
+      const date = new Date();
+      const year = date.getFullYear();
+      const createdYear = createdAt.substring(0, 4);
+      const gap = year - createdYear;
+      return gap + " years ago";
+    },
   },
   {
     title: "Action",
@@ -101,6 +114,7 @@ export const StyledContent = styled(Content)`
 
 export const StyledTable = styled(Table)`
   margin: 0 16px;
+  // max-width: 500px;
 `;
 
 export default function Dashboard() {
@@ -135,7 +149,11 @@ export default function Dashboard() {
           Add
         </StyledButton>
         <StyledSearch placeholder="Search by name" onSearch={onSearch} />
-        <StyledTable columns={columns} dataSource={dataSource} />
+        <StyledTable
+          // style={{ maxWidth: "500px" }}
+          columns={columns}
+          dataSource={dataSource}
+        />
       </StyledContent>
     </AppLayout>
   );
