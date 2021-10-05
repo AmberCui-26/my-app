@@ -53,7 +53,7 @@ export default function LoginPage() {
     if (!!token) {
       router.push("/dashboard/student");
     }
-  }, []);
+  });
 
   return (
     <div style={{ height: "100%" }}>

@@ -3,9 +3,9 @@ import { Breadcrumb, Layout, Button, Input, Table, Space } from "antd";
 import styled from "styled-components";
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const { Content, Header } = Layout;
+const { Content } = Layout;
 const { Search } = Input;
 const onSearch = (value) => console.log(value);
 const columns = [
@@ -48,15 +48,14 @@ const columns = [
   {
     title: "Selected Curriculum",
     dataIndex: "courses",
-    render: (courses) => {
-      var arr = Object.keys(courses);
-      const names = [];
-      for (var i = 0; i < arr.length; i++) {
-        names[i] += courses[i].name + ",";
-      }
-      // console.log(names);
-      return names;
-    },
+    render: (courses) =>
+      courses.map((course, index) => {
+        if (index < courses.length - 1) {
+          return `${course.name},`;
+        } else {
+          return `${course.name}`;
+        }
+      }),
   },
   {
     title: "Student Type",
@@ -134,6 +133,9 @@ export default function Dashboard() {
       });
   };
   const dataSource = data;
+  useEffect(() => {
+    getStudentList();
+  });
   console.log(dataSource);
   return (
     <AppLayout>
@@ -141,11 +143,7 @@ export default function Dashboard() {
       <Breadcrumb.Item>Student</Breadcrumb.Item>
       <Breadcrumb.Item>Student list</Breadcrumb.Item>
       <StyledContent>
-        <StyledButton
-          onClick={getStudentList}
-          type="primary"
-          icon={<PlusOutlined />}
-        >
+        <StyledButton type="primary" icon={<PlusOutlined />}>
           Add
         </StyledButton>
         <StyledSearch placeholder="Search by name" onSearch={onSearch} />
