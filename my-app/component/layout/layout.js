@@ -67,21 +67,21 @@ export default function AppLayout(props) {
         className="site-layout-background"
       >
         <Menu theme="dark" mode="inline">
-          <Menu.Item>
+          <Menu.Item key="sub1">
             <StyledText>CMS</StyledText>
           </Menu.Item>
 
-          <Menu.Item key="sub1" icon={<DashboardOutlined />}>
+          <Menu.Item key="sub2" icon={<DashboardOutlined />}>
             Overview
           </Menu.Item>
 
-          <SubMenu key="sub2" icon={<SolutionOutlined />} title="Student">
+          <SubMenu key="sub3" icon={<SolutionOutlined />} title="Student">
             <Menu.Item key="1" icon={<TeamOutlined />}>
               Student List
             </Menu.Item>
           </SubMenu>
 
-          <SubMenu key="sub3" icon={<DeploymentUnitOutlined />} title="Teacher">
+          <SubMenu key="sub4" icon={<DeploymentUnitOutlined />} title="Teacher">
             <Menu.Item key="2" icon={<TeamOutlined />}>
               Teacher List
             </Menu.Item>
