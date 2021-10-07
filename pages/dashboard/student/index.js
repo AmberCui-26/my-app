@@ -30,13 +30,12 @@ export const StyledTable = styled(Table)`
 
 export default function Dashboard() {
   const [data, setData] = useState();
-  // const [pagination, setPagination]=useState(10);
   const getStudentList = () => {
-    const url = "https://cms.chtoma.com/api/students?page=1&limit=308";
+    const url = "https://cms.chtoma.com/api/students";
     const token = localStorage.getItem("token");
     const authHeader = { Authorization: `Bearer ${token}` };
     axios
-      .get(url, { headers: authHeader })
+      .get(url, { params: { limit: 20, page: 1 } }, { headers: authHeader })
       .then((res) => {
         const info = res.data.data.students;
         setData(info);
