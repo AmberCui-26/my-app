@@ -1,11 +1,11 @@
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Radio, Checkbox, Col, Row, message } from "antd";
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import styled from "styled-components";
-import { AES } from "crypto-js";
-import { useRouter } from "next/dist/client/router";
-import axios from "axios";
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Radio, Checkbox, Col, Row, message } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
+import { AES } from 'crypto-js';
+import { useRouter } from 'next/dist/client/router';
+import axios from 'axios';
 
 export const Heading = styled.h1`
   text-align: center;
@@ -22,41 +22,42 @@ export const StyledButton = styled(Button)`
 
 export default function LoginPage() {
   const [form] = Form.useForm();
-  const [roles, setRole] = useState("student");
+  const [roles, setRole] = useState('student');
   const router = useRouter();
   const onFinish = (values) => {
-    const url = "https://cms.chtoma.com/api/login";
+    console.log(values);
+    const url = 'https://cms.chtoma.com/api/login';
     const params = {
       ...values,
-      password: AES.encrypt(values.password, "cms").toString(),
+      password: AES.encrypt(values.password, 'cms').toString(),
     };
     axios({
-      method: "post",
+      method: 'post',
       url: url,
       data: params,
     })
       .then((res) => {
         const token = res.data.data.token;
-        localStorage.setItem("token", token);
+        localStorage.setItem('token', token);
         const role = res.data.data.role;
-        localStorage.setItem("role", role);
+        localStorage.setItem('role', role);
         const userId = res.data.data.userId;
-        localStorage.setItem("userId", userId);
-        router.push("dashboard/student");
+        localStorage.setItem('userId', userId);
+        router.push('dashboard/student');
       })
       .catch((error) => {
-        message.error("Please check your password or email");
+        message.error('Please check your password or email');
       });
   };
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (!!token) {
-      router.push("/dashboard/student");
+      router.push('/dashboard/student');
     }
   }, []);
 
   return (
-    <div style={{ height: "100%" }}>
+    <div style={{ height: '100%' }}>
       <Heading>COURSE MANAGEMENT ASSISTANT</Heading>
       <Row justify="center">
         <Col md={8} sm={24}>
@@ -81,7 +82,7 @@ export default function LoginPage() {
               name="email"
               rules={[
                 {
-                  type: "email",
+                  type: 'email',
                   message: '"email" is not a valid email',
                 },
                 {
@@ -131,9 +132,9 @@ export default function LoginPage() {
             </Form.Item>
 
             <Form.Item>
-              No account?{" "}
+              No account?{' '}
               <Link href="/signup">
-                <a style={{ color: "blue" }}>Sign up</a>
+                <a style={{ color: 'blue' }}>Sign up</a>
               </Link>
             </Form.Item>
           </Form>

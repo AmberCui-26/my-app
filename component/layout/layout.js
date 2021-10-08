@@ -1,4 +1,4 @@
-import { Layout, Menu, Avatar, Breadcrumb } from "antd";
+import { Layout, Menu, Avatar, Breadcrumb } from 'antd';
 import {
   TeamOutlined,
   DashboardOutlined,
@@ -12,11 +12,11 @@ import {
   SolutionOutlined,
   EditOutlined,
   UserOutlined,
-} from "@ant-design/icons";
-import { useState } from "react";
-import axios from "axios";
-import styled from "styled-components";
-import { useRouter } from "next/dist/client/router";
+} from '@ant-design/icons';
+import { useState } from 'react';
+import axios from 'axios';
+import styled from 'styled-components';
+import { useRouter } from 'next/dist/client/router';
 
 const { SubMenu } = Menu;
 const { Header, Sider } = Layout;
@@ -43,22 +43,21 @@ export default function AppLayout(props) {
   const router = useRouter();
   const [collapsed, setCollapse] = useState(false);
   const logOut = () => {
-    const url = "https://cms.chtoma.com/api/logout";
-    const token = localStorage.getItem("token");
-    console.log(token);
+    const url = 'https://cms.chtoma.com/api/logout';
+    const token = localStorage.getItem('token');
     const authHeader = { Authorization: `Bearer ${token}` };
     axios
       .post(url, {}, { headers: authHeader })
       .then(() => {
         localStorage.clear();
-        router.push("/login");
+        router.push('/login');
       })
       .catch((error) => {
         console.log(error);
       });
   };
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout style={{ minHeight: '100vh' }}>
       <Sider
         collapsible
         collapsed={collapsed}
@@ -108,9 +107,9 @@ export default function AppLayout(props) {
         <StyledLayoutHeader className="header">
           <div onClick={() => setCollapse(!collapsed)}>
             {collapsed ? (
-              <MenuUnfoldOutlined style={{ color: "#fff", fontSize: "18px" }} />
+              <MenuUnfoldOutlined style={{ color: '#fff', fontSize: '18px' }} />
             ) : (
-              <MenuFoldOutlined style={{ color: "#fff", fontSize: "18px" }} />
+              <MenuFoldOutlined style={{ color: '#fff', fontSize: '18px' }} />
             )}
           </div>
 
