@@ -1,9 +1,19 @@
 import AppLayout from '../../../component/layout/layout';
-import { Breadcrumb, Layout, Button, Input, Table, Space } from 'antd';
+import {
+  Breadcrumb,
+  Layout,
+  Button,
+  Input,
+  Table,
+  Space,
+  Form,
+  message,
+} from 'antd';
 import styled from 'styled-components';
 import axios from 'axios';
+import { PlusOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
-import Modal from '../../../component/modal/modal';
+import ModalForm from '../../../component/modal/modal';
 
 const onSearch = (value) => console.log(value);
 const { Content } = Layout;
@@ -57,7 +67,9 @@ export default function Dashboard() {
         console.log(error);
       });
   };
-  console.log(data);
+  const onDelete = () => {
+    console.log(1);
+  };
   const dataSource = data;
   useEffect(() => {
     getStudentList();
@@ -163,22 +175,57 @@ export default function Dashboard() {
     },
     {
       title: 'Action',
-      key: 'operation',
+      key: 'action',
       render: () => (
         <Space>
           <a>Edit</a>
-          <a>Delete</a>
+          <a onClick={onDelete}>Delete</a>
         </Space>
       ),
     },
   ];
+  const [visible, setVisible] = useState(false);
   return (
     <AppLayout>
       <Breadcrumb.Item>CMS MANAGER SYSTEM</Breadcrumb.Item>
       <Breadcrumb.Item>Student</Breadcrumb.Item>
       <Breadcrumb.Item>Student list</Breadcrumb.Item>
       <StyledContent>
-        <Modal />
+        <>
+          <Form.Provider
+            onFormFinish={(name, { values }) => {
+              if (name === 'studentForm') {
+                setVisible(false);
+                const url = 'https://cms.chtoma.com/api/students';
+                const token = localStorage.getItem('token');
+                const authHeader = { Authorization: `Bearer ${token}` };
+                const params = {
+                  ...values,
+                };
+                console.log(params);
+                axios
+                  .post(url, params, { headers: authHeader })
+                  .then(() => {
+                    message.success('Success');
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              }
+            }}
+          >
+            <StyledButton
+              htmlType="button"
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setVisible(true)}
+            >
+              Add User
+            </StyledButton>
+
+            <ModalForm visible={visible} onCancel={() => setVisible(false)} />
+          </Form.Provider>
+        </>
         <StyledSearch placeholder="Search by name" onSearch={onSearch} />
         <StyledTable
           pagination={{

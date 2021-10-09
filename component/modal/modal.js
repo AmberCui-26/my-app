@@ -1,12 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Form, Input, Modal, Button, Select, message, Row, Col } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-import styled from 'styled-components';
-import axios from 'axios';
-
-export const StyledButton = styled(Button)`
-  margin: 16px 16px;
-`;
+import React, { useEffect, useRef } from 'react';
+import { Form, Input, Modal, Select, Row, Col } from 'antd';
 
 const { Option } = Select;
 
@@ -23,7 +16,7 @@ const useResetFormOnCloseModal = ({ form, visible }) => {
   }, [visible]);
 };
 
-const ModalForm = ({ visible, onCancel }) => {
+export default function ModalForm({ visible, onCancel }) {
   const [form] = Form.useForm();
   useResetFormOnCloseModal({
     form,
@@ -45,10 +38,10 @@ const ModalForm = ({ visible, onCancel }) => {
         <Col span="24">
           <Form
             labelCol={{
-              span: 8,
+              span: 6,
             }}
             wrapperCol={{
-              span: 14,
+              span: 18,
             }}
             form={form}
             name="studentForm"
@@ -109,55 +102,13 @@ const ModalForm = ({ visible, onCancel }) => {
               ]}
             >
               <Select>
-                <Select.Option value={1}>Tester</Select.Option>
-                <Select.Option value={2}>Developer</Select.Option>
+                <Option value={1}>Tester</Option>
+                <Option value={2}>Developer</Option>
               </Select>
             </Form.Item>
           </Form>
         </Col>
       </Row>
     </Modal>
-  );
-};
-
-export default function Demo() {
-  const [visible, setVisible] = useState(false);
-
-  return (
-    <>
-      <Form.Provider
-        onFormFinish={(name, { values }) => {
-          if (name === 'studentForm') {
-            setVisible(false);
-            const url = 'https://cms.chtoma.com/api/students';
-            const token = localStorage.getItem('token');
-            const authHeader = { Authorization: `Bearer ${token}` };
-            const params = {
-              ...values,
-            };
-            console.log(params);
-            axios
-              .post(url, params, { headers: authHeader })
-              .then((res) => {
-                message.success('Success');
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-        }}
-      >
-        <StyledButton
-          htmlType="button"
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => setVisible(true)}
-        >
-          Add User
-        </StyledButton>
-
-        <ModalForm visible={visible} onCancel={() => setVisible(false)} />
-      </Form.Provider>
-    </>
   );
 }
