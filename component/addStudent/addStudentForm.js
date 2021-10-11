@@ -11,8 +11,11 @@ const ModalFormSubmit = styled(Form.Item)`
 
 const { Option } = Select;
 
-export default function StudentForm() {
+export default function StudentForm(props) {
   const [form] = Form.useForm();
+  const students = props.student;
+  console.log(333, students);
+
   return (
     <Form
       labelCol={{
@@ -22,7 +25,13 @@ export default function StudentForm() {
         span: 18,
       }}
       form={form}
-      name="studentForm"
+      name={!!students ? 'editStudentForm' : 'studentForm'}
+      initialValues={{
+        name: students?.name,
+        email: students?.email,
+        country: students?.country,
+        type: students?.type.id,
+      }}
     >
       <Form.Item
         name="name"
@@ -85,8 +94,12 @@ export default function StudentForm() {
         </Select>
       </Form.Item>
 
-      <ModalFormSubmit>
-        <Button>action</Button>
+      <ModalFormSubmit shouldUpdate={true}>
+        {() => (
+          <Button type="primary" htmlType="submit">
+            {!!students ? 'Update' : 'Add'}
+          </Button>
+        )}
       </ModalFormSubmit>
     </Form>
   );

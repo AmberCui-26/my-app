@@ -211,7 +211,7 @@ export default function Dashboard() {
       ),
     },
   ];
-  console.log(222, !!editStudent);
+  console.log(222, editStudent);
   const deleteStudent = (id) => {
     const token = localStorage.getItem('token');
     const authHeader = { Authorization: `Bearer ${token}` };
@@ -252,6 +252,10 @@ export default function Dashboard() {
     }, 1000),
     [value]
   );
+  const onCancel = () => {
+    setVisible(false);
+    setEditStudent(null);
+  };
 
   return (
     <AppLayout>
@@ -262,16 +266,30 @@ export default function Dashboard() {
         <>
           <Form.Provider
             onFormFinish={(name, { values }) => {
+              setVisible(false);
+              setEditStudent(null);
+              const url = 'https://cms.chtoma.com/api/students';
+              const token = localStorage.getItem('token');
+              const authHeader = { Authorization: `Bearer ${token}` };
               if (name === 'studentForm') {
-                setVisible(false);
-                const url = 'https://cms.chtoma.com/api/students';
-                const token = localStorage.getItem('token');
-                const authHeader = { Authorization: `Bearer ${token}` };
                 const params = {
                   ...values,
                 };
                 axios
                   .post(url, params, { headers: authHeader })
+                  .then(() => {
+                    message.success('Success');
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              } else if (name === 'editStudentForm') {
+                const params = {
+                  ...values,
+                  id: editStudent.id,
+                };
+                axios
+                  .put(url, params, { headers: authHeader })
                   .then(() => {
                     message.success('Success');
                   })
@@ -294,16 +312,11 @@ export default function Dashboard() {
             </StyledButton>
 
             <ModalForm
-              // title={!!editStudent ? 'Edit Student' : 'Add Student'}
+              titleName={!!editStudent ? 'Edit Student' : 'Add Student'}
               visible={visible}
-              editStudent={editStudent}
-              onCancel={() => {
-                form.resetFields();
-                setEditStudent(null);
-                setVisible(false);
-              }}
+              onCancel={onCancel}
             >
-              <AddStudentForm />
+              <AddStudentForm student={editStudent} />
             </ModalForm>
           </Form.Provider>
         </>
