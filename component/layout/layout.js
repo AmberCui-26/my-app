@@ -75,7 +75,11 @@ export default function AppLayout(props) {
           </Menu.Item>
 
           <SubMenu key="sub3" icon={<SolutionOutlined />} title="Student">
-            <Menu.Item key="1" icon={<TeamOutlined />}>
+            <Menu.Item
+              onClick={() => router.push('manager/student')}
+              key="1"
+              icon={<TeamOutlined />}
+            >
               Student List
             </Menu.Item>
           </SubMenu>

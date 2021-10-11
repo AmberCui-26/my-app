@@ -1,4 +1,4 @@
-import AppLayout from '../../../component/layout/layout';
+import AppLayout from '../../../../component/layout/layout';
 import {
   Breadcrumb,
   Layout,
@@ -8,14 +8,16 @@ import {
   Space,
   Form,
   message,
+  Popconfirm,
 } from 'antd';
 import styled from 'styled-components';
 import axios from 'axios';
 import { PlusOutlined } from '@ant-design/icons';
-import { useEffect, useState } from 'react';
-import ModalForm from '../../../component/modal/modal';
+import { useCallback, useEffect, useState } from 'react';
+import ModalForm from '../../../../component/modal/modal';
+import AddStudentForm from '../../../../component/addStudent/addStudentForm';
+import { debounce } from 'lodash';
 
-const onSearch = (value) => console.log(value);
 const { Content } = Layout;
 const { Search } = Input;
 
@@ -43,20 +45,28 @@ export default function Dashboard() {
   const [total, setTotal] = useState();
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
+  const [visible, setVisible] = useState(false);
+  const [editStudent, setEditStudent] = useState();
+  const [value, setValue] = useState('');
+
   const onShowPageChange = (current) => {
     setPage(current);
   };
+
   const onShowSizeChange = (current, pageSize) => {
     setPageSize(pageSize);
     setPage(current);
   };
+
   const getStudentList = () => {
-    const url =
-      'https://cms.chtoma.com/api/students?limit=' + pageSize + '&page=' + page;
+    const url = 'https://cms.chtoma.com/api/students?';
     const token = localStorage.getItem('token');
     const authHeader = { Authorization: `Bearer ${token}` };
     axios
-      .get(url, { headers: authHeader })
+      .get(url, {
+        params: { limit: pageSize, page: page },
+        headers: authHeader,
+      })
       .then((res) => {
         const info = res.data.data.students;
         const num = res.data.data.total;
@@ -67,13 +77,13 @@ export default function Dashboard() {
         console.log(error);
       });
   };
-  const onDelete = () => {
-    console.log(1);
-  };
+
   const dataSource = data;
+
   useEffect(() => {
     getStudentList();
-  }, [pageSize, page, total]);
+  }, [page, pageSize]);
+
   const columns = [
     {
       title: 'No.',
@@ -176,15 +186,73 @@ export default function Dashboard() {
     {
       title: 'Action',
       key: 'action',
-      render: () => (
+      render: (text, record) => (
         <Space>
-          <a>Edit</a>
-          <a onClick={onDelete}>Delete</a>
+          <a
+            onClick={() => {
+              setEditStudent(record);
+              setVisible(true);
+            }}
+          >
+            Edit
+          </a>
+
+          <Popconfirm
+            title="Are you sure to delete？"
+            okText="Confirm"
+            cancelText="Cancel"
+            onConfirm={() => {
+              deleteStudent(record.id);
+            }}
+          >
+            <a>Delete</a>
+          </Popconfirm>
         </Space>
       ),
     },
   ];
-  const [visible, setVisible] = useState(false);
+  console.log(222, !!editStudent);
+  const deleteStudent = (id) => {
+    const token = localStorage.getItem('token');
+    const authHeader = { Authorization: `Bearer ${token}` };
+    axios({
+      method: 'delete',
+      url: `https://cms.chtoma.com/api/students/${id}`,
+      headers: authHeader,
+    })
+      .then(() => {
+        message.success('Success');
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const onChange = useCallback(
+    debounce((event) => {
+      const nextValue = event.target.value;
+      const url = 'https://cms.chtoma.com/api/students?';
+      const token = localStorage.getItem('token');
+      const authHeader = { Authorization: `Bearer ${token}` };
+      axios
+        .get(url, {
+          params: { limit: pageSize, page: page, query: nextValue },
+          headers: authHeader,
+        })
+        .then((res) => {
+          const info = res.data.data.students;
+          const num = res.data.data.total;
+          setTotal(num);
+          setData(info);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      console.log(nextValue);
+    }, 1000),
+    [value]
+  );
+
   return (
     <AppLayout>
       <Breadcrumb.Item>CMS MANAGER SYSTEM</Breadcrumb.Item>
@@ -202,7 +270,6 @@ export default function Dashboard() {
                 const params = {
                   ...values,
                 };
-                console.log(params);
                 axios
                   .post(url, params, { headers: authHeader })
                   .then(() => {
@@ -218,15 +285,33 @@ export default function Dashboard() {
               htmlType="button"
               type="primary"
               icon={<PlusOutlined />}
-              onClick={() => setVisible(true)}
+              onClick={() => {
+                setVisible(true);
+                setEditStudent(null);
+              }}
             >
               Add User
             </StyledButton>
 
-            <ModalForm visible={visible} onCancel={() => setVisible(false)} />
+            <ModalForm
+              // title={!!editStudent ? 'Edit Student' : 'Add Student'}
+              visible={visible}
+              editStudent={editStudent}
+              onCancel={() => {
+                form.resetFields();
+                setEditStudent(null);
+                setVisible(false);
+              }}
+            >
+              <AddStudentForm />
+            </ModalForm>
           </Form.Provider>
         </>
-        <StyledSearch placeholder="Search by name" onSearch={onSearch} />
+        <StyledSearch
+          placeholder="Search by name"
+          onSearch={(value) => setValue(value)}
+          onChange={onChange}
+        />
         <StyledTable
           pagination={{
             total: total,

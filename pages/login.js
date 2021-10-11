@@ -43,7 +43,7 @@ export default function LoginPage() {
         localStorage.setItem('role', role);
         const userId = res.data.data.userId;
         localStorage.setItem('userId', userId);
-        router.push('dashboard/student');
+        router.push('dashboard//manager');
       })
       .catch((error) => {
         message.error('Please check your password or email');
@@ -52,7 +52,7 @@ export default function LoginPage() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!!token) {
-      router.push('/dashboard/student');
+      router.push('/dashboard//manager');
     }
   }, []);
 
