@@ -5,6 +5,7 @@ export default function ModalForm(props) {
   console.log(111, props.onCancel);
   return (
     <Modal
+      destroyOnClose={true}
       title={props.titleName}
       visible={props.visible}
       onCancel={props.onCancel}
