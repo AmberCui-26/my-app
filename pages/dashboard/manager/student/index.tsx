@@ -17,6 +17,7 @@ import { useCallback, useEffect, useState } from 'react';
 import ModalForm from '../../../../component/modal/modal';
 import AddStudentForm from '../../../../component/addStudent/addStudentForm';
 import { debounce } from 'lodash';
+import {Student} from '../../../../lib/modal/student';
 
 const { Content } = Layout;
 const { Search } = Input;
@@ -46,7 +47,7 @@ export default function Dashboard() {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [visible, setVisible] = useState(false);
-  const [editStudent, setEditStudent] = useState();
+  const [editStudent, setEditStudent] = useState<Student>(null);
   const [value, setValue] = useState('');
 
   const onShowPageChange = (current) => {
@@ -248,7 +249,6 @@ export default function Dashboard() {
         .catch((error) => {
           console.log(error);
         });
-      console.log(nextValue);
     }, 1000),
     [value]
   );

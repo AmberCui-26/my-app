@@ -14,7 +14,6 @@ const { Option } = Select;
 export default function StudentForm(props) {
   const [form] = Form.useForm();
   const students = props.student;
-  console.log(333, students);
 
   return (
     <Form

@@ -2,7 +2,6 @@ import React from 'react';
 import { Modal, Button } from 'antd';
 
 export default function ModalForm(props) {
-  console.log(111, props.onCancel);
   return (
     <Modal
       destroyOnClose={true}

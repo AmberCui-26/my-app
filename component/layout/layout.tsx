@@ -59,6 +59,7 @@ export default function AppLayout(props) {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider
+        // style={{ overflow: 'auto', height: '100vh', position: 'fixed' }}
         collapsible
         collapsed={collapsed}
         onCollapse={(isCollapsed) => setCollapse(isCollapsed)}

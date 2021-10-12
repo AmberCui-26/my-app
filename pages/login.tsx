@@ -24,8 +24,7 @@ export default function LoginPage() {
   const [form] = Form.useForm();
   const [roles, setRole] = useState('student');
   const router = useRouter();
-  const onFinish = (values) => {
-    console.log(values);
+  const onFinish = (values:{role:"student"|"teacher"|"manager";email:string;password:string}) => {
     const url = 'https://cms.chtoma.com/api/login';
     const params = {
       ...values,
@@ -39,10 +38,6 @@ export default function LoginPage() {
       .then((res) => {
         const token = res.data.data.token;
         localStorage.setItem('token', token);
-        const role = res.data.data.role;
-        localStorage.setItem('role', role);
-        const userId = res.data.data.userId;
-        localStorage.setItem('userId', userId);
         router.push('dashboard//manager');
       })
       .catch((error) => {
