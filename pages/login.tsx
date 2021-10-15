@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { AES } from 'crypto-js';
 import { useRouter } from 'next/dist/client/router';
 import axios from 'axios';
+import {login} from '../lib/services/apiService';
 
 export const Heading = styled.h1`
   text-align: center;
@@ -24,17 +25,12 @@ export default function LoginPage() {
   const [form] = Form.useForm();
   const [roles, setRole] = useState('student');
   const router = useRouter();
-  const onFinish = (values:{role:"student"|"teacher"|"manager";email:string;password:string}) => {
-    const url = 'https://cms.chtoma.com/api/login';
+  const onFinish = async(values:{role:"student"|"teacher"|"manager";email:string;password:string}) => {
     const params = {
       ...values,
       password: AES.encrypt(values.password, 'cms').toString(),
     };
-    axios({
-      method: 'post',
-      url: url,
-      data: params,
-    })
+   await login(params)
       .then((res) => {
         const token = res.data.data.token;
         localStorage.setItem('token', token);

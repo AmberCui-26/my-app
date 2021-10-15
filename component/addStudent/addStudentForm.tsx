@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Form, Input, Select } from 'antd';
 import styled from 'styled-components';
+import { Student } from '../../lib/modal/student';
 
 const ModalFormSubmit = styled(Form.Item)`
   position: absolute;
@@ -11,9 +12,13 @@ const ModalFormSubmit = styled(Form.Item)`
 
 const { Option } = Select;
 
-export default function StudentForm(props) {
+interface StudentFormProps {
+student?:Student;
+}
+
+export default function StudentForm(props:StudentFormProps): JSX.Element {
   const [form] = Form.useForm();
-  const students = props.student;
+  const {student} = props;
 
   return (
     <Form
@@ -24,12 +29,12 @@ export default function StudentForm(props) {
         span: 18,
       }}
       form={form}
-      name={!!students ? 'editStudentForm' : 'studentForm'}
+      name={!!student ? 'editStudentForm' : 'studentForm'}
       initialValues={{
-        name: students?.name,
-        email: students?.email,
-        country: students?.country,
-        type: students?.type.id,
+        name: student?.name,
+        email: student?.email,
+        country: student?.country,
+        type: student?.type.id,
       }}
     >
       <Form.Item
@@ -96,7 +101,7 @@ export default function StudentForm(props) {
       <ModalFormSubmit shouldUpdate={true}>
         {() => (
           <Button type="primary" htmlType="submit">
-            {!!students ? 'Update' : 'Add'}
+            {!!student ? 'Update' : 'Add'}
           </Button>
         )}
       </ModalFormSubmit>

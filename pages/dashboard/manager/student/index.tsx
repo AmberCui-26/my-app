@@ -11,13 +11,15 @@ import {
   Popconfirm,
 } from 'antd';
 import styled from 'styled-components';
-import axios from 'axios';
 import { PlusOutlined } from '@ant-design/icons';
 import { useCallback, useEffect, useState } from 'react';
 import ModalForm from '../../../../component/modal/modal';
 import AddStudentForm from '../../../../component/addStudent/addStudentForm';
 import { debounce } from 'lodash';
 import {Student} from '../../../../lib/modal/student';
+import {CourseInfo} from '../../../../lib/modal/course';
+import {getStudents,deleteStudent,searchStudents,addStudent,editStudents} from '../../../../lib/services/apiService';
+import { StudentType } from '../../../../lib/modal/type';
 
 const { Content } = Layout;
 const { Search } = Input;
@@ -43,31 +45,25 @@ export const StyledTable = styled(Table)`
 
 export default function Dashboard() {
   const [data, setData] = useState();
-  const [total, setTotal] = useState();
+  const [total, setTotal] = useState<number>();
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [visible, setVisible] = useState(false);
   const [editStudent, setEditStudent] = useState<Student>(null);
   const [value, setValue] = useState('');
 
-  const onShowPageChange = (current) => {
+  const onShowPageChange = (current:number) => {
     setPage(current);
   };
 
-  const onShowSizeChange = (current, pageSize) => {
+  const onShowSizeChange = (current:number, pageSize:number) => {
     setPageSize(pageSize);
     setPage(current);
   };
 
-  const getStudentList = () => {
-    const url = 'https://cms.chtoma.com/api/students?';
-    const token = localStorage.getItem('token');
-    const authHeader = { Authorization: `Bearer ${token}` };
-    axios
-      .get(url, {
-        params: { limit: pageSize, page: page },
-        headers: authHeader,
-      })
+  const getStudentList = (pageSize:number,page:number) => {
+    const params= {limit: pageSize, page: page };
+      getStudents(params)
       .then((res) => {
         const info = res.data.data.students;
         const num = res.data.data.total;
@@ -79,17 +75,15 @@ export default function Dashboard() {
       });
   };
 
-  const dataSource = data;
-
   useEffect(() => {
-    getStudentList();
-  }, [page, pageSize]);
+    getStudentList(pageSize,page);
+  }, [pageSize,page]);
 
   const columns = [
     {
       title: 'No.',
       key: 'index',
-      render: (_1, _2, index) => index + 1,
+      render: (_1, _2, index:number) => index + 1,
     },
     {
       title: 'Name',
@@ -128,7 +122,7 @@ export default function Dashboard() {
           value: 'Australia',
         },
       ],
-      onFilter: (value, record) => record.country.indexOf(value) === 0,
+      onFilter: (value, record:Student) => record.country.indexOf(value) === 0,
     },
     {
       title: 'Email',
@@ -138,8 +132,8 @@ export default function Dashboard() {
     {
       title: 'Selected Curriculum',
       dataIndex: 'courses',
-      render: (courses) =>
-        courses.map((course, index) => {
+      render: (courses:CourseInfo[]) =>
+        courses.map((course, index:number) => {
           if (index < courses.length - 1) {
             return `${course.name},`;
           } else {
@@ -150,7 +144,7 @@ export default function Dashboard() {
     {
       title: 'Student Type',
       dataIndex: 'type',
-      render: (type) => {
+      render: (type:StudentType) => {
         if (type) {
           return type['name'];
         } else {
@@ -187,7 +181,7 @@ export default function Dashboard() {
     {
       title: 'Action',
       key: 'action',
-      render: (text, record) => (
+      render: (text, record:Student) => (
         <Space>
           <a
             onClick={() => {
@@ -203,7 +197,7 @@ export default function Dashboard() {
             okText="Confirm"
             cancelText="Cancel"
             onConfirm={() => {
-              deleteStudent(record.id);
+              onDelete(record.id);
             }}
           >
             <a>Delete</a>
@@ -212,15 +206,10 @@ export default function Dashboard() {
       ),
     },
   ];
-  console.log(222, editStudent);
-  const deleteStudent = (id) => {
-    const token = localStorage.getItem('token');
-    const authHeader = { Authorization: `Bearer ${token}` };
-    axios({
-      method: 'delete',
-      url: `https://cms.chtoma.com/api/students/${id}`,
-      headers: authHeader,
-    })
+
+  const onDelete = async (id:number) => {
+    const params=id
+    await deleteStudent(params)
       .then(() => {
         message.success('Success');
       })
@@ -229,17 +218,11 @@ export default function Dashboard() {
       });
   };
 
-  const onChange = useCallback(
+  const onChange = useCallback( 
     debounce((event) => {
       const nextValue = event.target.value;
-      const url = 'https://cms.chtoma.com/api/students?';
-      const token = localStorage.getItem('token');
-      const authHeader = { Authorization: `Bearer ${token}` };
-      axios
-        .get(url, {
-          params: { limit: pageSize, page: page, query: nextValue },
-          headers: authHeader,
-        })
+      const params={ limit: pageSize, page: page, query: nextValue };
+      searchStudents(params)
         .then((res) => {
           const info = res.data.data.students;
           const num = res.data.data.total;
@@ -257,6 +240,17 @@ export default function Dashboard() {
     setEditStudent(null);
   };
 
+  const refreshStudentList=()=>{
+    setData({...data, students:data.students.map(student=>{
+      if(student.id==editStudent.id){
+        return editStudent;
+      }else{
+        return student;
+      }
+    }
+    )});
+  };
+
   return (
     <AppLayout>
       <Breadcrumb.Item>CMS MANAGER SYSTEM</Breadcrumb.Item>
@@ -265,18 +259,14 @@ export default function Dashboard() {
       <StyledContent>
         <>
           <Form.Provider
-            onFormFinish={(name, { values }) => {
+            onFormFinish= {async (name, { values }) => {
               setVisible(false);
-              setEditStudent(null);
-              const url = 'https://cms.chtoma.com/api/students';
-              const token = localStorage.getItem('token');
-              const authHeader = { Authorization: `Bearer ${token}` };
+              setData(null);
               if (name === 'studentForm') {
                 const params = {
                   ...values,
                 };
-                axios
-                  .post(url, params, { headers: authHeader })
+                await addStudent(params)
                   .then(() => {
                     message.success('Success');
                   })
@@ -288,8 +278,7 @@ export default function Dashboard() {
                   ...values,
                   id: editStudent.id,
                 };
-                axios
-                  .put(url, params, { headers: authHeader })
+                await editStudents(params)
                   .then(() => {
                     message.success('Success');
                   })
@@ -297,6 +286,7 @@ export default function Dashboard() {
                     console.log(error);
                   });
               }
+              refreshStudentList();
             }}
           >
             <StyledButton
@@ -322,7 +312,7 @@ export default function Dashboard() {
         </>
         <StyledSearch
           placeholder="Search by name"
-          onSearch={(value) => setValue(value)}
+          onSearch={(value:string) => setValue(value)}
           onChange={onChange}
         />
         <StyledTable
@@ -332,7 +322,7 @@ export default function Dashboard() {
             onShowSizeChange: onShowSizeChange,
           }}
           columns={columns}
-          dataSource={dataSource}
+          dataSource={data}
         />
       </StyledContent>
     </AppLayout>
