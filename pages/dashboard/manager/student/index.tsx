@@ -209,9 +209,9 @@ export default function Dashboard() {
     },
   ];
 
-  const onDelete = async (id: number) => {
-    const params = id;
-    await deleteStudent(params)
+  const onDelete = (id: number) => {
+    const params = { id };
+    deleteStudent(params)
       .then(() => {
         message.success('Success');
       })
@@ -267,13 +267,13 @@ export default function Dashboard() {
         }}
       >
         <Form.Provider
-          onFormFinish={async (name, { values }) => {
+          onFormFinish={(name, { values }) => {
             setVisible(false);
             if (name === 'studentForm') {
               const params = {
                 ...values,
               };
-              await addStudent(params)
+              addStudent(params)
                 .then(() => {
                   message.success('Success');
                 })
@@ -285,7 +285,7 @@ export default function Dashboard() {
                 ...values,
                 id: editStudent.id,
               };
-              await editStudents(params)
+              editStudents(params)
                 .then(() => {
                   message.success('Success');
                 })

@@ -24,7 +24,7 @@ export default function LoginPage() {
   const [form] = Form.useForm();
   const [roles, setRole] = useState('student');
   const router = useRouter();
-  const onFinish = async (values: {
+  const onFinish = (values: {
     role: 'student' | 'teacher' | 'manager';
     email: string;
     password: string;
@@ -33,7 +33,7 @@ export default function LoginPage() {
       ...values,
       password: AES.encrypt(values.password, 'cms').toString(),
     };
-    await login(params)
+    login(params)
       .then((res) => {
         const token = res.data.data.token;
         localStorage.setItem('token', token);

@@ -14,7 +14,7 @@ export default function Breadcrumbs() {
   const root = '/' + path.slice(0, 2).join('/'); ///dashboard/manager
   const root1 = '/' + path.slice(0, 3).join('/');
   const role = path[1]; //manager
-  var firstBreadcrumbElement: string,
+  let firstBreadcrumbElement: string,
     secondBreadcrumbElement: string,
     thirdBreadcrumbElement: string;
   if (path[2]) {

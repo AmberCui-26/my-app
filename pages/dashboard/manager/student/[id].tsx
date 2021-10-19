@@ -38,7 +38,8 @@ export default function StudentDetail(props: { id: number }) {
       title: 'Type',
       dataIndex: 'type',
       key: 'type',
-      render: (type) => type.map((current) => current.name),
+      render: (type: { id: number; name: string }[]) =>
+        type.map((current) => current.name),
     },
     {
       title: 'Join Time',
