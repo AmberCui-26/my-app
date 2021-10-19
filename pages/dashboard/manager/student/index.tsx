@@ -1,27 +1,24 @@
 import AppLayout from '../../../../component/layout/layout';
-import {
-  Breadcrumb,
-  Layout,
-  Button,
-  Input,
-  Table,
-  Space,
-  Form,
-  message,
-  Popconfirm,
-} from 'antd';
+import { Button, Input, Table, Space, Form, message, Popconfirm } from 'antd';
 import styled from 'styled-components';
 import { PlusOutlined } from '@ant-design/icons';
 import { useCallback, useEffect, useState } from 'react';
 import ModalForm from '../../../../component/modal/modal';
 import AddStudentForm from '../../../../component/addStudent/addStudentForm';
 import { debounce } from 'lodash';
-import {Student} from '../../../../lib/modal/student';
-import {CourseInfo} from '../../../../lib/modal/course';
-import {getStudents,deleteStudent,searchStudents,addStudent,editStudents} from '../../../../lib/services/apiService';
+import { Student } from '../../../../lib/modal/student';
+import { CourseInfo } from '../../../../lib/modal/course';
+import {
+  getStudents,
+  deleteStudent,
+  searchStudents,
+  addStudent,
+  editStudents,
+} from '../../../../lib/services/apiService';
 import { StudentType } from '../../../../lib/modal/type';
+import Link from 'next/link';
 
-const { Content } = Layout;
+// const { Content } = Layout;
 const { Search } = Input;
 
 export const StyledButton = styled(Button)`
@@ -30,13 +27,7 @@ export const StyledButton = styled(Button)`
 
 export const StyledSearch = styled(Search)`
   margin: 16px;
-  margin-left: 629px;
   width: 200px;
-`;
-
-export const StyledContent = styled(Content)`
-  margin: 20px -9px;
-  background: #fff;
 `;
 
 export const StyledTable = styled(Table)`
@@ -44,7 +35,7 @@ export const StyledTable = styled(Table)`
 `;
 
 export default function Dashboard() {
-  const [data, setData] = useState();
+  const [data, setData] = useState([]);
   const [total, setTotal] = useState<number>();
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
@@ -52,18 +43,18 @@ export default function Dashboard() {
   const [editStudent, setEditStudent] = useState<Student>(null);
   const [value, setValue] = useState('');
 
-  const onShowPageChange = (current:number) => {
+  const onShowPageChange = (current: number) => {
     setPage(current);
   };
 
-  const onShowSizeChange = (current:number, pageSize:number) => {
+  const onShowSizeChange = (current: number, pageSize: number) => {
     setPageSize(pageSize);
     setPage(current);
   };
 
-  const getStudentList = (pageSize:number,page:number) => {
-    const params= {limit: pageSize, page: page };
-      getStudents(params)
+  const getStudentList = (pageSize: number, page: number) => {
+    const params = { limit: pageSize, page: page };
+    getStudents(params)
       .then((res) => {
         const info = res.data.data.students;
         const num = res.data.data.total;
@@ -76,18 +67,19 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    getStudentList(pageSize,page);
-  }, [pageSize,page]);
+    getStudentList(pageSize, page);
+  }, [pageSize, page]);
 
   const columns = [
     {
       title: 'No.',
       key: 'index',
-      render: (_1, _2, index:number) => index + 1,
+      render: (_1, _2, index: number) => index + 1,
     },
     {
       title: 'Name',
       dataIndex: 'name',
+      key: 'name',
       sorter: (a, b) => {
         var nameA = a.name.toUpperCase();
         var nameB = b.name.toUpperCase();
@@ -100,10 +92,18 @@ export default function Dashboard() {
         return 0;
       },
       sortDirections: ['descend', 'ascend'],
+      render: (name, record) => {
+        return (
+          <Link href={'/dashboard/manager/student/' + record.id}>
+            <a>{name}</a>
+          </Link>
+        );
+      },
     },
     {
       title: 'Area',
       dataIndex: 'country',
+      key: 'country',
       filters: [
         {
           text: 'China',
@@ -122,7 +122,7 @@ export default function Dashboard() {
           value: 'Australia',
         },
       ],
-      onFilter: (value, record:Student) => record.country.indexOf(value) === 0,
+      onFilter: (value, record: Student) => record.country.indexOf(value) === 0,
     },
     {
       title: 'Email',
@@ -132,8 +132,8 @@ export default function Dashboard() {
     {
       title: 'Selected Curriculum',
       dataIndex: 'courses',
-      render: (courses:CourseInfo[]) =>
-        courses.map((course, index:number) => {
+      render: (courses: CourseInfo[]) =>
+        courses.map((course, index: number) => {
           if (index < courses.length - 1) {
             return `${course.name},`;
           } else {
@@ -144,7 +144,8 @@ export default function Dashboard() {
     {
       title: 'Student Type',
       dataIndex: 'type',
-      render: (type:StudentType) => {
+      key: 'type',
+      render: (type: StudentType) => {
         if (type) {
           return type['name'];
         } else {
@@ -170,6 +171,7 @@ export default function Dashboard() {
     {
       title: 'Join Time',
       dataIndex: 'createdAt',
+      key: 'createTime',
       render: (createdAt) => {
         const date = new Date();
         const year = date.getFullYear();
@@ -181,7 +183,7 @@ export default function Dashboard() {
     {
       title: 'Action',
       key: 'action',
-      render: (text, record:Student) => (
+      render: (text, record: Student) => (
         <Space>
           <a
             onClick={() => {
@@ -207,8 +209,8 @@ export default function Dashboard() {
     },
   ];
 
-  const onDelete = async (id:number) => {
-    const params=id
+  const onDelete = async (id: number) => {
+    const params = id;
     await deleteStudent(params)
       .then(() => {
         message.success('Success');
@@ -218,10 +220,10 @@ export default function Dashboard() {
       });
   };
 
-  const onChange = useCallback( 
+  const onChange = useCallback(
     debounce((event) => {
       const nextValue = event.target.value;
-      const params={ limit: pageSize, page: page, query: nextValue };
+      const params = { limit: pageSize, page: page, query: nextValue };
       searchStudents(params)
         .then((res) => {
           const info = res.data.data.students;
@@ -240,91 +242,97 @@ export default function Dashboard() {
     setEditStudent(null);
   };
 
-  const refreshStudentList=()=>{
-    setData({...data, students:data.students.map(student=>{
-      if(student.id==editStudent.id){
-        return editStudent;
-      }else{
-        return student;
-      }
-    }
-    )});
-  };
-
+  // const refreshStudentList=()=>{
+  //   setData(data.map((student,index)=>{
+  //       if(student.id==editStudent.id){
+  //         // return editStudent;
+  //         return data.splice(index,1,editStudent);
+  //       }else{
+  //         return student;
+  //       }
+  //   }));
+  // };
+  // export const StyledContent = styled(Content)`
+  //   margin: 20px -9px;
+  //   background: #fff;
+  // `;
   return (
     <AppLayout>
-      <Breadcrumb.Item>CMS MANAGER SYSTEM</Breadcrumb.Item>
-      <Breadcrumb.Item>Student</Breadcrumb.Item>
-      <Breadcrumb.Item>Student list</Breadcrumb.Item>
-      <StyledContent>
-        <>
-          <Form.Provider
-            onFormFinish= {async (name, { values }) => {
-              setVisible(false);
-              setData(null);
-              if (name === 'studentForm') {
-                const params = {
-                  ...values,
-                };
-                await addStudent(params)
-                  .then(() => {
-                    message.success('Success');
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              } else if (name === 'editStudentForm') {
-                const params = {
-                  ...values,
-                  id: editStudent.id,
-                };
-                await editStudents(params)
-                  .then(() => {
-                    message.success('Success');
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
-              }
-              refreshStudentList();
+      <div
+        style={{
+          backgroundColor: '#fff',
+          margin: '10px',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Form.Provider
+          onFormFinish={async (name, { values }) => {
+            setVisible(false);
+            if (name === 'studentForm') {
+              const params = {
+                ...values,
+              };
+              await addStudent(params)
+                .then(() => {
+                  message.success('Success');
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            } else if (name === 'editStudentForm') {
+              const params = {
+                ...values,
+                id: editStudent.id,
+              };
+              await editStudents(params)
+                .then(() => {
+                  message.success('Success');
+                })
+                .catch((error) => {
+                  console.log(error);
+                });
+            }
+            // refreshStudentList();
+          }}
+        >
+          <StyledButton
+            htmlType="button"
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              setVisible(true);
+              setEditStudent(null);
             }}
           >
-            <StyledButton
-              htmlType="button"
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => {
-                setVisible(true);
-                setEditStudent(null);
-              }}
-            >
-              Add User
-            </StyledButton>
+            Add User
+          </StyledButton>
 
-            <ModalForm
-              titleName={!!editStudent ? 'Edit Student' : 'Add Student'}
-              visible={visible}
-              onCancel={onCancel}
-            >
-              <AddStudentForm student={editStudent} />
-            </ModalForm>
-          </Form.Provider>
-        </>
-        <StyledSearch
-          placeholder="Search by name"
-          onSearch={(value:string) => setValue(value)}
-          onChange={onChange}
-        />
-        <StyledTable
-          pagination={{
-            total: total,
-            onChange: onShowPageChange,
-            onShowSizeChange: onShowSizeChange,
-          }}
-          columns={columns}
-          dataSource={data}
-        />
-      </StyledContent>
+          <StyledSearch
+            placeholder="Search by name"
+            onSearch={(value: string) => setValue(value)}
+            onChange={onChange}
+          />
+
+          <ModalForm
+            titleName={!!editStudent ? 'Edit Student' : 'Add Student'}
+            visible={visible}
+            onCancel={onCancel}
+          >
+            <AddStudentForm studentInfo={editStudent} />
+          </ModalForm>
+        </Form.Provider>
+      </div>
+
+      <StyledTable
+        pagination={{
+          total: total,
+          onChange: onShowPageChange,
+          onShowSizeChange: onShowSizeChange,
+        }}
+        columns={columns}
+        dataSource={data}
+      />
     </AppLayout>
   );
 }

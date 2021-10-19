@@ -13,12 +13,12 @@ const ModalFormSubmit = styled(Form.Item)`
 const { Option } = Select;
 
 interface StudentFormProps {
-student?:Student;
+  studentInfo?: Student;
 }
 
-export default function StudentForm(props:StudentFormProps): JSX.Element {
+export default function StudentForm(props: StudentFormProps): JSX.Element {
   const [form] = Form.useForm();
-  const {student} = props;
+  const { studentInfo } = props;
 
   return (
     <Form
@@ -29,12 +29,12 @@ export default function StudentForm(props:StudentFormProps): JSX.Element {
         span: 18,
       }}
       form={form}
-      name={!!student ? 'editStudentForm' : 'studentForm'}
+      name={!!studentInfo ? 'editStudentForm' : 'studentForm'}
       initialValues={{
-        name: student?.name,
-        email: student?.email,
-        country: student?.country,
-        type: student?.type.id,
+        name: studentInfo?.name,
+        email: studentInfo?.email,
+        country: studentInfo?.country,
+        type: studentInfo?.type.id,
       }}
     >
       <Form.Item
@@ -99,11 +99,9 @@ export default function StudentForm(props:StudentFormProps): JSX.Element {
       </Form.Item>
 
       <ModalFormSubmit shouldUpdate={true}>
-        {() => (
-          <Button type="primary" htmlType="submit">
-            {!!student ? 'Update' : 'Add'}
-          </Button>
-        )}
+        <Button type="primary" htmlType="submit">
+          {!!studentInfo ? 'Update' : 'Add'}
+        </Button>
       </ModalFormSubmit>
     </Form>
   );

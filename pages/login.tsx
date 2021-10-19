@@ -5,8 +5,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { AES } from 'crypto-js';
 import { useRouter } from 'next/dist/client/router';
-import axios from 'axios';
-import {login} from '../lib/services/apiService';
+import { login } from '../lib/services/apiService';
 
 export const Heading = styled.h1`
   text-align: center;
@@ -25,16 +24,20 @@ export default function LoginPage() {
   const [form] = Form.useForm();
   const [roles, setRole] = useState('student');
   const router = useRouter();
-  const onFinish = async(values:{role:"student"|"teacher"|"manager";email:string;password:string}) => {
+  const onFinish = async (values: {
+    role: 'student' | 'teacher' | 'manager';
+    email: string;
+    password: string;
+  }) => {
     const params = {
       ...values,
       password: AES.encrypt(values.password, 'cms').toString(),
     };
-   await login(params)
+    await login(params)
       .then((res) => {
         const token = res.data.data.token;
         localStorage.setItem('token', token);
-        router.push('dashboard//manager');
+        router.push('dashboard/manager');
       })
       .catch((error) => {
         message.error('Please check your password or email');
@@ -43,7 +46,7 @@ export default function LoginPage() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!!token) {
-      router.push('/dashboard//manager');
+      router.push('/dashboard/manager');
     }
   }, []);
 

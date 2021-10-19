@@ -1,4 +1,4 @@
-import { Layout, Menu, Avatar, Breadcrumb } from 'antd';
+import { Layout, Menu, Avatar } from 'antd';
 import {
   TeamOutlined,
   DashboardOutlined,
@@ -16,20 +16,16 @@ import {
 import { useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import Breadcrumbs from '../breadcrumbs/breadcrumbs';
 import { useRouter } from 'next/dist/client/router';
 
 const { SubMenu } = Menu;
-const { Header, Sider } = Layout;
+const { Header, Sider, Content } = Layout;
 
 export const StyledLayoutHeader = styled(Header)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-export const StyledBreadcrumb = styled(Breadcrumb)`
-  margin: 16px 0;
-  padding: 0 30px;
 `;
 
 export const StyledText = styled.h3`
@@ -71,7 +67,11 @@ export default function AppLayout(props) {
             <StyledText>CMS</StyledText>
           </Menu.Item>
 
-          <Menu.Item key="sub2" icon={<DashboardOutlined />}>
+          <Menu.Item
+            onClick={() => router.push('/dashboard/manager')}
+            key="sub2"
+            icon={<DashboardOutlined />}
+          >
             Overview
           </Menu.Item>
 
@@ -86,7 +86,11 @@ export default function AppLayout(props) {
           </SubMenu>
 
           <SubMenu key="sub4" icon={<DeploymentUnitOutlined />} title="Teacher">
-            <Menu.Item key="2" icon={<TeamOutlined />}>
+            <Menu.Item
+              key="2"
+              icon={<TeamOutlined />}
+              onClick={() => router.push('teacher')}
+            >
               Teacher List
             </Menu.Item>
           </SubMenu>
@@ -117,10 +121,12 @@ export default function AppLayout(props) {
               <MenuFoldOutlined style={{ color: '#fff', fontSize: '18px' }} />
             )}
           </div>
-
-          <Avatar icon={<UserOutlined />} onClick={logOut}></Avatar>
+          <div onClick={logOut}>
+            <Avatar icon={<UserOutlined />}></Avatar>
+          </div>
         </StyledLayoutHeader>
-        <StyledBreadcrumb>{props.children}</StyledBreadcrumb>
+        <Breadcrumbs />
+        <Content>{props.children}</Content>
       </Layout>
     </Layout>
   );
