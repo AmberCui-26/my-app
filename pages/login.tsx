@@ -50,6 +50,44 @@ export default function LoginPage() {
     }
   }, []);
 
+  // let routes = [
+  //   {
+  //     breadcrumb: '一级目录',
+  //     path: '/a',
+  //     component: 'yulu',
+  //     items: [
+  //       {
+  //         breadcrumb: '二级目录',
+  //         path: '/a/b',
+  //         component: 'amy',
+  //         items: [
+  //           {
+  //             breadcrumb: '三级目录1',
+  //             path: '/a/b/c1',
+  //             component: 'albert',
+  //             exact: true,
+  //           },
+  //           {
+  //             breadcrumb: '三级目录2',
+  //             path: '/a/b/c2',
+  //             component: 'amber',
+  //             exact: true,
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  // ];
+  // const flattenRoutes = (arr) =>
+  //   arr.reduce(function (prev, item) {
+  //     console.log('item', item);
+  //     prev.push(item);
+  //     console.log('prev', prev);
+  //     return prev.concat(
+  //       Array.isArray(item.items) ? flattenRoutes(item.items) : item
+  //     );
+  //   }, []);
+  // console.log('result', flattenRoutes(routes));
   interface SideNav {
     title: string;
     path: string;
@@ -133,29 +171,32 @@ export default function LoginPage() {
         { title: 'American', path: 'american' },
       ],
     },
-    {
-      title: 'Country',
-      path: 'country',
-      subNav: [
-        { title: 'MAINLAND', path: 'mainland' },
-        { title: 'TAIWAN', path: 'taiwan' },
-      ],
-    },
   ];
-
-  function findTitle(name) {
-    for (let i = 0; i < source.length; i++) {
-      if (!source[i].subNav[0].subNav) {
-        for (let j = 0; j < source[i].subNav.length; j++) {
-          if (source[i].subNav[j].title == name) {
-            return source[i].subNav[j];
-          }
-        }
-      } else {
+  let arr1 = [];
+  const flattenSource = (arr) => {
+    arr.reduce(function (prev: {}, item: {}) {
+      if (prev) {
+        arr1.push(prev);
       }
-    }
-  }
-  console.log(111, findTitle('TAIWAN'));
+      arr1.push(item);
+      console.log('arr1', arr1);
+      // return arr1.concat()
+    });
+  };
+  flattenSource(source);
+  // function findTitle(name) {
+  //   for (let i = 0; i < source.length; i++) {
+  //     if (!source[i].subNav[0].subNav) {
+  //       for (let j = 0; j < source[i].subNav.length; j++) {
+  //         if (source[i].subNav[j].title == name) {
+  //           return source[i].subNav[j];
+  //         }
+  //       }
+  //     } else {
+  //     }
+  //   }
+  // }
+  // console.log(111, findTitle('TAIWAN'));
 
   return (
     <div style={{ height: '100%' }}>

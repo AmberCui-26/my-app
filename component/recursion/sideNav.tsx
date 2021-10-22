@@ -81,26 +81,30 @@ export const source: SideNav[] = [
       { title: 'American', path: 'american' },
     ],
   },
-  {
-    title: 'Country',
-    path: 'country',
-    subNav: [
-      { title: 'MAINLAND', path: 'mainland' },
-      { title: 'TAIWAN', path: 'taiwan' },
-    ],
-  },
 ];
 
-function findTitle(name) {
-  for (let i = 0; i < source.length; i++) {
-    if (!source[i].subNav[0].subNav) {
-      for (let j = 0; j < source[i].subNav.length; j++) {
-        if (source[i].subNav[j].title == name) {
-          return source[i].subNav[j];
-        }
-      }
-    } else {
+let arr1 = [];
+const flattenSource = (arr) => {
+  arr.reduce(function (prev: {}, item: {}) {
+    if (prev) {
+      arr1.push(prev);
     }
-  }
-}
-console.log(111, findTitle('TAIWAN'));
+    arr1.push(item);
+    console.log('arr1', arr1);
+    // return arr1.concat()
+  });
+};
+flattenSource(source);
+// function findTitle(name) {
+//   for (let i = 0; i < source.length; i++) {
+//     if (!source[i].subNav[0].subNav) {
+//       for (let j = 0; j < source[i].subNav.length; j++) {
+//         if (source[i].subNav[j].title == name) {
+//           return source[i].subNav[j];
+//         }
+//       }
+//     } else {
+//     }
+//   }
+// }
+// console.log(111, findTitle('TAIWAN'));
