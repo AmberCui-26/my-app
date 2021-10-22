@@ -13,7 +13,7 @@ import {
   EditOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { useState } from 'react';
+import { PropsWithChildren, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import Breadcrumbs from '../breadcrumbs/breadcrumbs';
@@ -35,7 +35,7 @@ export const StyledText = styled.h3`
   width: 100%;
 `;
 
-export default function AppLayout(props) {
+export default function AppLayout(props: PropsWithChildren<any>) {
   const router = useRouter();
   const [collapsed, setCollapse] = useState(false);
   const logOut = () => {
