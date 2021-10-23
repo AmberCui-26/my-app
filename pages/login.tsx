@@ -175,15 +175,20 @@ export default function LoginPage() {
   let arr1 = [];
   const flattenSource = (arr) => {
     arr.reduce(function (prev: {}, item: {}) {
-      if (prev) {
-        arr1.push(prev);
-      }
+      console.log('prev', prev);
+      console.log('item', item);
+      // if (prev) {
+      //   arr1.push(prev);
+      // }
       arr1.push(item);
       console.log('arr1', arr1);
-      // return arr1.concat()
-    });
+      return arr1.concat(item['subNav'] ? flattenSource(item['subNav']) : item);
+    }, []);
   };
   flattenSource(source);
+  let result = arr1.find((result) => result.title === 'CHINA');
+  console.log(111, result);
+
   // function findTitle(name) {
   //   for (let i = 0; i < source.length; i++) {
   //     if (!source[i].subNav[0].subNav) {
