@@ -18,6 +18,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import Breadcrumbs from '../breadcrumbs/breadcrumbs';
 import { useRouter } from 'next/dist/client/router';
+import { routes, SideNav } from '../../lib/modal/route';
 
 const { SubMenu } = Menu;
 const { Header, Sider, Content } = Layout;
@@ -34,6 +35,18 @@ export const StyledText = styled.h3`
   margin-top: 10px;
   width: 100%;
 `;
+
+function generateMenus(data: SideNav[]): JSX.Element[] {
+  return data.map((item) => {
+    if (item.subNav) {
+      return <Menu.SubMenu>{generateMenus(item.subNav)}</Menu.SubMenu>;
+    } else {
+      return <Menu.Item>{item.label}</Menu.Item>;
+    }
+  });
+}
+const sideNave = routes.get('manager');
+console.log(generateMenus(sideNave));
 
 export default function AppLayout(props: PropsWithChildren<any>) {
   const router = useRouter();

@@ -50,44 +50,28 @@ export default function LoginPage() {
     }
   }, []);
 
-  // let routes = [
-  //   {
-  //     breadcrumb: '一级目录',
-  //     path: '/a',
-  //     component: 'yulu',
-  //     items: [
-  //       {
-  //         breadcrumb: '二级目录',
-  //         path: '/a/b',
-  //         component: 'amy',
-  //         items: [
-  //           {
-  //             breadcrumb: '三级目录1',
-  //             path: '/a/b/c1',
-  //             component: 'albert',
-  //             exact: true,
-  //           },
-  //           {
-  //             breadcrumb: '三级目录2',
-  //             path: '/a/b/c2',
-  //             component: 'amber',
-  //             exact: true,
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  // ];
-  // const flattenRoutes = (arr) =>
-  //   arr.reduce(function (prev, item) {
-  //     console.log('item', item);
-  //     prev.push(item);
-  //     console.log('prev', prev);
-  //     return prev.concat(
-  //       Array.isArray(item.items) ? flattenRoutes(item.items) : item
-  //     );
-  //   }, []);
-  // console.log('result', flattenRoutes(routes));
+  // const a = { name: 'bbb', age: { class: 12, school: { area: 'China' } } };
+
+  // function deepClone(obj) {
+  //   if (typeof obj !== 'object') {
+  //     console.log('obj', obj);
+  //     return obj;
+  //   } else {
+  //     let b = {};
+  //     for (let key in obj) {
+  //       console.log('OBJ', obj);
+  //       console.log('key', key);
+  //       console.log('value', obj[key]);
+  //       b[key] = deepClone(obj[key]);
+  //       console.log('B', b);
+  //     }
+  //     console.log('b', b);
+  //     return b;
+  //   }
+  // }
+  // const c = deepClone(a);
+  // console.log(c.age === a.age);
+
   interface SideNav {
     title: string;
     path: string;
@@ -172,36 +156,60 @@ export default function LoginPage() {
       ],
     },
   ];
-  let arr1 = [];
-  const flattenSource = (arr) => {
-    arr.reduce(function (prev: {}, item: {}) {
-      console.log('prev', prev);
-      console.log('item', item);
-      // if (prev) {
-      //   arr1.push(prev);
-      // }
-      arr1.push(item);
-      console.log('arr1', arr1);
-      return arr1.concat(item['subNav'] ? flattenSource(item['subNav']) : item);
-    }, []);
-  };
-  flattenSource(source);
-  let result = arr1.find((result) => result.title === 'CHINA');
-  console.log(111, result);
 
-  // function findTitle(name) {
-  //   for (let i = 0; i < source.length; i++) {
-  //     if (!source[i].subNav[0].subNav) {
-  //       for (let j = 0; j < source[i].subNav.length; j++) {
-  //         if (source[i].subNav[j].title == name) {
-  //           return source[i].subNav[j];
-  //         }
-  //       }
-  //     } else {
+  const searchTitle = (value: string) => {
+    return function search(data) {
+      const headNode = data.slice(0, 1)[0];
+      const restNodes = data.slice(1);
+
+      if (headNode.title === value) {
+        return headNode;
+      }
+
+      if (headNode['subNav']) {
+        const res = search(headNode['subNav']);
+        if (res) {
+          return res;
+        }
+      }
+      if (restNodes.length) {
+        const res = search(restNodes);
+        if (res) {
+          return res;
+        }
+      }
+      return null;
+    };
+  };
+  // const deepSearch = searchTitle('MAINLAND');
+  // const target = deepSearch(source);
+  // console.log(target);
+  // const flattenSource = (arr, name: string) => {
+  //   for (let i = 0; i < arr.length; i++) {
+  //     if (arr[i].title === name) {
+  //       return arr[i];
+  //     }else if(arr[i].subNav){
+
   //     }
-  //   }
+  // else {
+  //   return 0;
   // }
-  // console.log(111, findTitle('TAIWAN'));
+  //   }
+  // };
+  // console.log(flattenSource(source, 'MAINLAND'));
+  // let arr1 = [];
+  // const flattenSource = (arr) => {
+  //   arr.reduce(function (prev: {}, item: {}) {
+  //     console.log('prev', prev);
+  //     console.log('item', item);
+  //     arr1.push(item);
+  //     console.log('arr1', arr1.length);
+  // return arr1.concat(item['subNav'] ? flattenSource(item['subNav']) : item);
+  //   }, {});
+  // };
+  // flattenSource(source);
+  // let result = arr1.find((result) => result.title === 'CHINA');
+  // console.log(111, result);
 
   return (
     <div style={{ height: '100%' }}>
