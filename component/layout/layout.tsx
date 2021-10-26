@@ -1,16 +1,7 @@
 import { Layout, Menu, Avatar } from 'antd';
 import {
-  TeamOutlined,
-  DashboardOutlined,
-  MessageOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  FileAddOutlined,
-  DeploymentUnitOutlined,
-  ProjectOutlined,
-  ReadOutlined,
-  SolutionOutlined,
-  EditOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { PropsWithChildren, useState } from 'react';
@@ -19,6 +10,8 @@ import styled from 'styled-components';
 import Breadcrumbs from '../breadcrumbs/breadcrumbs';
 import { useRouter } from 'next/dist/client/router';
 import { routes, SideNav } from '../../lib/modal/route';
+import { Role } from '../../lib/modal/role';
+import Link from 'next/link';
 
 const { SubMenu } = Menu;
 const { Header, Sider, Content } = Layout;
@@ -37,20 +30,54 @@ export const StyledText = styled.h3`
 `;
 
 function generateMenus(data: SideNav[]): JSX.Element[] {
+  const router = useRouter();
   return data.map((item) => {
     if (item.subNav) {
-      return <Menu.SubMenu>{generateMenus(item.subNav)}</Menu.SubMenu>;
+      return (
+        <Menu.SubMenu key={item.label} icon={item.icon} title={item.label}>
+          {generateMenus(item.subNav)}
+        </Menu.SubMenu>
+      );
     } else {
-      return <Menu.Item>{item.label}</Menu.Item>;
+      console.log(item.label);
+      return (
+        <Menu.Item
+          key={item.label}
+          icon={item.icon}
+          // onClick={() => router.push(`manager/${item.path}`)}
+        >
+          <Link href={['/dashboard', 'manager', item.path].join('/')}>
+            {/* <Link href={`dashboard/manager/${item.path}`}> */}
+            {item.label}
+          </Link>
+        </Menu.Item>
+      );
     }
   });
 }
-const sideNave = routes.get('manager');
-console.log(generateMenus(sideNave));
 
 export default function AppLayout(props: PropsWithChildren<any>) {
   const router = useRouter();
+  const pathname = router.pathname.split('/').slice(1);
+  const name = pathname.slice(-1);
+  //const role = localStorage.getItem('role');
+  const sideName = routes.get('manager');
   const [collapsed, setCollapse] = useState(false);
+  const getLabel = () => {
+    for (let i in sideName) {
+      if (sideName[i].subNav) {
+        for (let j in sideName[i].subNav) {
+          if (sideName[i].subNav[j].path[0] === name[0]) {
+            const a: string[] = [];
+            a[0] = sideName[i].subNav[j].label;
+            console.log('a', a);
+            return a;
+          }
+        }
+      }
+    }
+  };
+
   const logOut = () => {
     const url = 'https://cms.chtoma.com/api/logout';
     const token = localStorage.getItem('token');
@@ -75,12 +102,12 @@ export default function AppLayout(props: PropsWithChildren<any>) {
         width={200}
         className="site-layout-background"
       >
-        <Menu theme="dark" mode="inline">
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={getLabel()}>
           <Menu.Item key="sub1">
             <StyledText>CMS</StyledText>
           </Menu.Item>
-
-          <Menu.Item
+          {generateMenus(sideName)}
+          {/* <Menu.Item
             onClick={() => router.push('/dashboard/manager')}
             key="sub2"
             icon={<DashboardOutlined />}
@@ -122,7 +149,7 @@ export default function AppLayout(props: PropsWithChildren<any>) {
 
           <Menu.Item key="6" icon={<MessageOutlined />}>
             Message
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       </Sider>
       <Layout>

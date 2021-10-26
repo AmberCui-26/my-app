@@ -37,6 +37,9 @@ export default function LoginPage() {
       .then((res) => {
         const token = res.data.data.token;
         localStorage.setItem('token', token);
+        console.log(res.data.data.role);
+        const role = res.data.data.role;
+        localStorage.setItem('role', role);
         router.push('dashboard/manager');
       })
       .catch((error) => {
