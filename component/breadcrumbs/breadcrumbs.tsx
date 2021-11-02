@@ -7,7 +7,7 @@ import { userRole } from "../../lib/modal/role";
 import { routes } from "../../lib/modal/route";
 
 export const StyledBreadcrumb = styled(Breadcrumb)`
-  margin: 16px 200px;
+  margin: 16px 0px;
   padding: 0 30px;
 `;
 export default function Breadcrumbs() {

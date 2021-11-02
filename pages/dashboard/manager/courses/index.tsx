@@ -13,12 +13,12 @@ export default function FirstPost() {
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>();
 
-  const loadMoreData = useCallback(() => {
+  const loadMoreData = () => {
     if (loading) {
       return;
     }
     setLoading(true);
-    console.log("page", page);
+    console.log("pag", page);
     const params = { page: page, limit: 20 };
     getCourseInfo(params)
       .then((res) => {
@@ -28,11 +28,11 @@ export default function FirstPost() {
         setPage((prev) => prev + 1);
       })
       .catch((error) => setLoading(false));
-  }, [setPage]);
+  };
 
   useEffect(() => {
     loadMoreData();
-  }, [loadMoreData]);
+  }, []);
 
   return (
     <AppLayout>

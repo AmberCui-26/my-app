@@ -20,6 +20,10 @@ const StyledLayoutHeader = styled(Header)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 0;
 `;
 
 const Logo = styled.div`
@@ -37,7 +41,10 @@ const Logo = styled.div`
 `;
 
 const StyledContent = styled(Content)`
-  margin-left: 200px;
+  margin: 16px;
+  background-color: #fff;
+  padding: 16px;
+  min-height: auto;
 `;
 
 const generateMenus = (data: SideNav[], parent = ""): JSX.Element[] => {
@@ -86,12 +93,15 @@ export default function AppLayout(props: PropsWithChildren<any>) {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
-        style={{ overflow: "auto", height: "100vh", position: "fixed" }}
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          position: "fixed",
+          left: 0,
+        }}
         collapsible
         collapsed={collapsed}
         onCollapse={(isCollapsed) => setCollapse(isCollapsed)}
-        width={200}
-        className="site-layout-background"
       >
         <Logo>
           <span style={{ color: "#fff", cursor: "pointer" }}>CMS</span>
@@ -105,8 +115,12 @@ export default function AppLayout(props: PropsWithChildren<any>) {
           {generateMenus(sideName)}
         </Menu>
       </Sider>
-      <Layout>
-        <StyledLayoutHeader className="header">
+
+      <Layout style={{ marginLeft: 200 }}>
+        <Header
+          style={{ display: "flex", justifyContent: "space-between" }}
+          className="header"
+        >
           <div onClick={() => setCollapse(!collapsed)}>
             {collapsed ? (
               <MenuUnfoldOutlined style={{ color: "#fff", fontSize: "18px" }} />
@@ -117,9 +131,11 @@ export default function AppLayout(props: PropsWithChildren<any>) {
           <div onClick={logOut}>
             <Avatar icon={<UserOutlined />}></Avatar>
           </div>
-        </StyledLayoutHeader>
+        </Header>
         <Breadcrumbs />
-        <StyledContent>{props.children}</StyledContent>
+        <Content style={{ width: "100%", position: "relative" }}>
+          {props.children}
+        </Content>
       </Layout>
     </Layout>
   );
