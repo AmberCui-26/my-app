@@ -10,84 +10,65 @@ import styled from "styled-components";
 import Breadcrumbs from "../breadcrumbs/breadcrumbs";
 import { useRouter } from "next/dist/client/router";
 import { routes, SideNav } from "../../lib/modal/route";
-import { Role } from "../../lib/modal/role";
+import { userRole } from "../../lib/modal/role";
 import Link from "next/link";
+import { getActiveKey } from "../../lib/modal/side-nav";
 
-const { SubMenu } = Menu;
 const { Header, Sider, Content } = Layout;
 
-export const StyledLayoutHeader = styled(Header)`
+const StyledLayoutHeader = styled(Header)`
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
-export const StyledText = styled.h3`
-  color: #fff;
-  text-align: center;
-  margin-top: 10px;
+const Logo = styled.div`
+  height: 64px;
+  display: inline-flex;
   width: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #fff;
+  letter-space: 5px;
+  text-shadow: 5px 1px 5px;
+  transform: rotateX(45deg);
+  font-family: monospace;
 `;
 
-function generateMenus(data: SideNav[]): JSX.Element[] {
-  const router = useRouter();
+const StyledContent = styled(Content)`
+  margin-left: 200px;
+`;
+
+const generateMenus = (data: SideNav[], parent = ""): JSX.Element[] => {
   return data.map((item) => {
+    const role = userRole();
     if (item.subNav) {
       return (
         <Menu.SubMenu key={item.label} icon={item.icon} title={item.label}>
-          {generateMenus(item.subNav)}
+          {generateMenus(item.subNav, item.path.join("/"))}
         </Menu.SubMenu>
       );
     } else {
       return (
-        <Menu.Item
-          key={item.label}
-          icon={item.icon}
-          // onClick={() => router.push(`manager/${item.path}`)}
-        >
-          <Link href={["/dashboard", "manager", item.path].join("/")}>
-            {/* <Link href={`dashboard/manager/${item.path}`}> */}
+        <Menu.Item key={item.label} icon={item.icon}>
+          <Link href={["/dashboard", role, parent, ...item.path].join("/")}>
             {item.label}
           </Link>
         </Menu.Item>
       );
     }
   });
-}
+};
 
 export default function AppLayout(props: PropsWithChildren<any>) {
   const router = useRouter();
-  const pathname = router.pathname.split("/").slice(1);
-  const name = pathname.slice(2);
-  //  function role():Role{
-  //    const currentRole=localStorage.getItem("role");
-  //    return currentRole;
-  //  }
-  const sideName = routes.get("manager");
+  const role = userRole();
+  const sideName = routes.get(role);
+  const key = getActiveKey(sideName, router.pathname, router.query);
+  const defaultSelectedKeys = [key.split("/").pop()];
+  const defaultOpenKeys = key.split("/").slice(0, -1);
   const [collapsed, setCollapse] = useState(false);
-  const getLabel = () => {
-    const selectedKey: string[] = [];
-    const openKey: string[] = [];
-    if (pathname.length === 2) {
-      selectedKey[0] = null;
-      openKey[0] = null;
-      return { selectedKey, openKey };
-    }
-    for (let i in sideName) {
-      if (sideName[i].subNav) {
-        for (let j in sideName[i].subNav) {
-          if (sideName[i].subNav[j].path[0] === name[0]) {
-            selectedKey[0] = sideName[i].subNav[j].label;
-            openKey[0] = sideName[i].label;
-            return { selectedKey, openKey };
-          }
-        }
-      }
-    }
-  };
-
-  const result = getLabel();
-
   const logOut = () => {
     const url = "https://cms.chtoma.com/api/logout";
     const token = localStorage.getItem("token");
@@ -105,22 +86,22 @@ export default function AppLayout(props: PropsWithChildren<any>) {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
-        // style={{ overflow: 'auto', height: '100vh', position: 'fixed' }}
+        style={{ overflow: "auto", height: "100vh", position: "fixed" }}
         collapsible
         collapsed={collapsed}
         onCollapse={(isCollapsed) => setCollapse(isCollapsed)}
         width={200}
         className="site-layout-background"
       >
+        <Logo>
+          <span style={{ color: "#fff", cursor: "pointer" }}>CMS</span>
+        </Logo>
         <Menu
           theme="dark"
           mode="inline"
-          defaultOpenKeys={result.openKey}
-          defaultSelectedKeys={result.selectedKey}
+          defaultOpenKeys={defaultOpenKeys}
+          defaultSelectedKeys={defaultSelectedKeys}
         >
-          <Menu.Item key="sub1">
-            <StyledText>CMS</StyledText>
-          </Menu.Item>
           {generateMenus(sideName)}
         </Menu>
       </Sider>
@@ -138,7 +119,7 @@ export default function AppLayout(props: PropsWithChildren<any>) {
           </div>
         </StyledLayoutHeader>
         <Breadcrumbs />
-        <Content>{props.children}</Content>
+        <StyledContent>{props.children}</StyledContent>
       </Layout>
     </Layout>
   );

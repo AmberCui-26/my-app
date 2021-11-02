@@ -40,7 +40,7 @@ export default function LoginPage() {
         console.log(res.data.data.role);
         const role = res.data.data.role;
         localStorage.setItem("role", role);
-        router.push("dashboard/manager");
+        router.push("/dashboard/manager");
       })
       .catch((error) => {
         message.error("Please check your password or email");
@@ -52,126 +52,6 @@ export default function LoginPage() {
       router.push("/dashboard/manager");
     }
   }, []);
-
-  // const a = { name: 'bbb', age: { class: 12, school: { area: 'China' } } };
-
-  // function deepClone(obj) {
-  //   if (typeof obj !== 'object') {
-  //     console.log('obj', obj);
-  //     return obj;
-  //   } else {
-  //     let b = {};
-  //     for (let key in obj) {
-  //       console.log('OBJ', obj);
-  //       console.log('key', key);
-  //       console.log('value', obj[key]);
-  //       b[key] = deepClone(obj[key]);
-  //       console.log('B', b);
-  //     }
-  //     console.log('b', b);
-  //     return b;
-  //   }
-  // }
-  // const c = deepClone(a);
-  // console.log(c.age === a.age);
-
-  interface SideNav {
-    title: string;
-    path: string;
-    subNav?: SideNav[];
-  }
-
-  const source: SideNav[] = [
-    {
-      title: "Car",
-      subNav: [
-        {
-          title: "HONDA",
-          path: "honda",
-          subNav: [
-            {
-              title: "DONGFENG",
-              path: "dongfeng",
-              subNav: [
-                { title: "NSPIRE", path: "nspire" },
-                { title: "ENVIX", path: "envix" },
-                { title: "CIVIC", path: "civic" },
-              ],
-            },
-            {
-              title: "GUANGQI",
-              path: "guangqi",
-              subNav: [
-                { title: "AVANCIER", path: "avancier" },
-                { title: "ACCORD", path: "accord" },
-              ],
-            },
-          ],
-        },
-        {
-          title: "TOYOTA",
-          path: "toyota",
-          subNav: [
-            { title: "COROLLA", path: "corolla" },
-            { title: "CAMRY", path: "camry" },
-            { title: "PRADO", path: "prado" },
-            { title: "ALPHARD", path: "alphard" },
-          ],
-        },
-      ],
-      path: "car",
-    },
-    {
-      title: "Area",
-      path: "area",
-      subNav: [
-        {
-          title: "NORTH",
-          path: "north",
-          subNav: [
-            { title: "BEIJING", path: "beijing" },
-            { title: "CHANGCHU", path: "changchu" },
-          ],
-        },
-        {
-          title: "SOUTH",
-          path: "south",
-          subNav: [
-            { title: "SHANGHAI", path: "shanghai" },
-            { title: "GUANGZHOU", path: "guangzhou" },
-          ],
-        },
-      ],
-    },
-    {
-      title: "Country",
-      path: "country",
-      subNav: [
-        {
-          title: "CHINA",
-          path: "china",
-          subNav: [
-            { title: "MAINLAND", path: "mainland" },
-            { title: "TAIWAN", path: "taiwan" },
-          ],
-        },
-        { title: "American", path: "american" },
-      ],
-    },
-  ];
-
-  let arr1 = [];
-  const flattenSource = (arr) => {
-    arr.reduce(function (prev: {}, item: {}) {
-      console.log("item", item);
-      arr1.push(item);
-      console.log("arr1", arr1);
-      return arr1.concat(item["subNav"] ? flattenSource(item["subNav"]) : item);
-    }, []);
-  };
-  flattenSource(source);
-  let result = arr1.find((result) => result.title === "CHINA");
-  console.log(111, result);
 
   return (
     <div style={{ height: "100%" }}>

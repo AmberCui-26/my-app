@@ -1,23 +1,23 @@
-import AppLayout from '../../../../component/layout/layout';
-import { Button, Input, Table, Space, Form, message, Popconfirm } from 'antd';
-import styled from 'styled-components';
-import { PlusOutlined } from '@ant-design/icons';
-import { useCallback, useEffect, useState } from 'react';
-import ModalForm from '../../../../component/modal/modal';
-import AddStudentForm from '../../../../component/addStudent/addStudentForm';
-import { debounce } from 'lodash';
-import { Student } from '../../../../lib/modal/student';
-import { CourseInfo } from '../../../../lib/modal/course';
+import AppLayout from "../../../../component/layout/layout";
+import { Button, Input, Table, Space, Form, message, Popconfirm } from "antd";
+import styled from "styled-components";
+import { PlusOutlined } from "@ant-design/icons";
+import { useCallback, useEffect, useState } from "react";
+import ModalForm from "../../../../component/modal/modal";
+import AddStudentForm from "../../../../component/addStudent/addStudentForm";
+import { debounce } from "lodash";
+import { Student } from "../../../../lib/modal/student";
+import { CourseInfo } from "../../../../lib/modal/course";
 import {
   getStudents,
   deleteStudent,
   searchStudents,
   addStudent,
   editStudents,
-} from '../../../../lib/services/apiService';
-import { StudentType } from '../../../../lib/modal/type';
-import Link from 'next/link';
-import { AddStudentRequest } from '../../../../lib/modal/request';
+} from "../../../../lib/services/apiService";
+import { StudentType } from "../../../../lib/modal/type";
+import Link from "next/link";
+import { AddStudentRequest } from "../../../../lib/modal/request";
 
 const { Search } = Input;
 
@@ -41,7 +41,7 @@ export default function Dashboard() {
   const [page, setPage] = useState(1);
   const [visible, setVisible] = useState(false);
   const [editStudent, setEditStudent] = useState<Student>(null);
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState("");
 
   const onShowPageChange = (current: number) => {
     setPage(current);
@@ -66,11 +66,6 @@ export default function Dashboard() {
       });
   };
 
-  // const refreshStudentList = () => {
-  //   data.splice(editStudent?.id - 1, 1, editStudent);
-  //   console.log(111, editStudent);
-  // };
-
   useEffect(() => {
     getStudentList(pageSize, page);
     // refreshStudentList();
@@ -78,14 +73,14 @@ export default function Dashboard() {
 
   const columns = [
     {
-      title: 'No.',
-      key: 'index',
+      title: "No.",
+      key: "index",
       render: (_1, _2, index: number) => index + 1,
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       sorter: (a, b) => {
         var nameA = a.name.toUpperCase();
         var nameB = b.name.toUpperCase();
@@ -97,47 +92,47 @@ export default function Dashboard() {
         }
         return 0;
       },
-      sortDirections: ['descend', 'ascend'],
+      sortDirections: ["descend", "ascend"],
       render: (name, record) => {
         return (
-          <Link href={'/dashboard/manager/student/' + record.id}>
+          <Link href={"/dashboard/manager/students/" + record.id}>
             <a>{name}</a>
           </Link>
         );
       },
     },
     {
-      title: 'Area',
-      dataIndex: 'country',
-      key: 'country',
+      title: "Area",
+      dataIndex: "country",
+      key: "country",
       filters: [
         {
-          text: 'China',
-          value: 'China',
+          text: "China",
+          value: "China",
         },
         {
-          text: 'New Zealand',
-          value: 'New Zealand',
+          text: "New Zealand",
+          value: "New Zealand",
         },
         {
-          text: 'Canada',
-          value: 'Canada',
+          text: "Canada",
+          value: "Canada",
         },
         {
-          text: 'Australia',
-          value: 'Australia',
+          text: "Australia",
+          value: "Australia",
         },
       ],
       onFilter: (value, record: Student) => record.country.indexOf(value) === 0,
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
-      title: 'Selected Curriculum',
-      dataIndex: 'courses',
+      title: "Selected Curriculum",
+      dataIndex: "courses",
       render: (courses: CourseInfo[]) =>
         courses.map((course, index: number) => {
           if (index < courses.length - 1) {
@@ -148,24 +143,24 @@ export default function Dashboard() {
         }),
     },
     {
-      title: 'Student Type',
-      dataIndex: 'type',
-      key: 'type',
+      title: "Student Type",
+      dataIndex: "type",
+      key: "type",
       render: (type: StudentType) => {
         if (type) {
-          return type['name'];
+          return type["name"];
         } else {
-          return ' ';
+          return " ";
         }
       },
       filters: [
         {
-          text: 'developer',
-          value: 'developer',
+          text: "developer",
+          value: "developer",
         },
         {
-          text: 'tester',
-          value: 'tester',
+          text: "tester",
+          value: "tester",
         },
       ],
       onFilter: (value, record) => {
@@ -175,20 +170,20 @@ export default function Dashboard() {
       },
     },
     {
-      title: 'Join Time',
-      dataIndex: 'createdAt',
-      key: 'createTime',
+      title: "Join Time",
+      dataIndex: "createdAt",
+      key: "createTime",
       render: (createdAt) => {
         const date = new Date();
         const year = date.getFullYear();
         const createdYear = createdAt.substring(0, 4);
         const gap = year - createdYear;
-        return gap + ' years ago';
+        return gap + " years ago";
       },
     },
     {
-      title: 'Action',
-      key: 'action',
+      title: "Action",
+      key: "action",
       render: (text, record: Student) => (
         <Space>
           <a
@@ -219,7 +214,7 @@ export default function Dashboard() {
     const params = { id };
     deleteStudent(params)
       .then(() => {
-        message.success('Success');
+        message.success("Success");
       })
       .catch((error) => {
         console.log(error);
@@ -257,31 +252,31 @@ export default function Dashboard() {
     <AppLayout>
       <div
         style={{
-          backgroundColor: '#fff',
-          margin: '10px',
+          backgroundColor: "#fff",
+          margin: "10px",
         }}
       >
         <div
           style={{
-            display: 'flex',
-            justifyContent: 'space-between',
+            display: "flex",
+            justifyContent: "space-between",
           }}
         >
           <Form.Provider
             onFormFinish={(name, { values }) => {
               setVisible(false);
-              if (name === 'studentForm') {
+              if (name === "studentForm") {
                 // const params = {
                 //   ...values,
                 // };
                 addStudent(values as AddStudentRequest)
                   .then(() => {
-                    message.success('Success');
+                    message.success("Success");
                   })
                   .catch((error) => {
                     console.log(error);
                   });
-              } else if (name === 'editStudentForm') {
+              } else if (name === "editStudentForm") {
                 const params = {
                   ...values,
                   id: editStudent.id,
@@ -289,7 +284,7 @@ export default function Dashboard() {
                 editStudents(params)
                   .then((res) => {
                     setEditStudent(res.data.data);
-                    message.success('Success');
+                    message.success("Success");
                   })
                   .catch((error) => {
                     console.log(error);
@@ -317,7 +312,7 @@ export default function Dashboard() {
             />
 
             <ModalForm
-              titleName={!!editStudent ? 'Edit Student' : 'Add Student'}
+              titleName={!!editStudent ? "Edit Student" : "Add Student"}
               visible={visible}
               onCancel={onCancel}
             >

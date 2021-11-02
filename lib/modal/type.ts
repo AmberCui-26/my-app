@@ -1,4 +1,4 @@
-export interface StudentType{
-    id:number;
-    name:string;
+export interface StudentType {
+  id: number;
+  name: string;
 }

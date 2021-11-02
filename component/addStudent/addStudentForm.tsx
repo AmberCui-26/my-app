@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button, Form, Input, Select } from 'antd';
-import styled from 'styled-components';
-import { Student } from '../../lib/modal/student';
+import React from "react";
+import { Button, Form, Input, Select } from "antd";
+import styled from "styled-components";
+import { Student } from "../../lib/modal/student";
 
 const ModalFormSubmit = styled(Form.Item)`
   position: absolute;
@@ -29,7 +29,7 @@ export default function StudentForm(props: StudentFormProps): JSX.Element {
         span: 18,
       }}
       form={form}
-      name={!!studentInfo ? 'editStudentForm' : 'studentForm'}
+      name={!!studentInfo ? "editStudentForm" : "studentForm"}
       initialValues={{
         name: studentInfo?.name,
         email: studentInfo?.email,
@@ -54,7 +54,7 @@ export default function StudentForm(props: StudentFormProps): JSX.Element {
         label="Email"
         rules={[
           {
-            type: 'email',
+            type: "email",
             message: '"email" is not a valid email',
           },
           {
@@ -100,7 +100,7 @@ export default function StudentForm(props: StudentFormProps): JSX.Element {
 
       <ModalFormSubmit shouldUpdate={true}>
         <Button type="primary" htmlType="submit">
-          {!!studentInfo ? 'Update' : 'Add'}
+          {!!studentInfo ? "Update" : "Add"}
         </Button>
       </ModalFormSubmit>
     </Form>

@@ -1,10 +1,10 @@
-import { Card, Row, Col, Tabs, Avatar, Table, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import AppLayout from '../../../../component/layout/layout';
-import { StudentResponse } from '../../../../lib/modal/response';
-import { getStudentById } from '../../../../lib/services/apiService';
-import styled from 'styled-components';
-import { TagColor } from '../../../../lib/modal/config';
+import { Card, Row, Col, Tabs, Avatar, Table, Tag } from "antd";
+import { useEffect, useState } from "react";
+import AppLayout from "../../../../component/layout/layout";
+import { StudentResponse } from "../../../../lib/modal/response";
+import { getStudentById } from "../../../../lib/services/apiService";
+import styled from "styled-components";
+import { TagColor } from "../../../../lib/modal/config";
 
 const { TabPane } = Tabs;
 
@@ -25,26 +25,26 @@ export default function StudentDetail(props: { id: number }) {
   const [data, setData] = useState<StudentResponse>();
   const columns = [
     {
-      title: 'No.',
-      key: 'index',
+      title: "No.",
+      key: "index",
       render: (_1, _2, index: number) => index + 1,
     },
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
       render: (type: { id: number; name: string }[]) =>
         type.map((current) => current.name),
     },
     {
-      title: 'Join Time',
-      dataIndex: 'createdAt',
-      key: 'time',
+      title: "Join Time",
+      dataIndex: "createdAt",
+      key: "time",
     },
   ];
   useEffect(() => {
@@ -54,22 +54,22 @@ export default function StudentDetail(props: { id: number }) {
     });
   }, []);
   const info = [
-    { label: 'Name', value: data?.name },
-    { label: 'Age', value: data?.age },
-    { label: 'Email', value: data?.email },
-    { label: 'Phone', value: data?.phone },
+    { label: "Name", value: data?.name },
+    { label: "Age", value: data?.age },
+    { label: "Email", value: data?.email },
+    { label: "Phone", value: data?.phone },
   ];
   const about = [
-    { label: 'Education:', value: data?.education },
-    { label: 'Area:', value: data?.country },
-    { label: 'Gender:', value: data?.gender == 1 ? 'Male' : 'Female' },
+    { label: "Education:", value: data?.education },
+    { label: "Area:", value: data?.country },
+    { label: "Gender:", value: data?.gender == 1 ? "Male" : "Female" },
     {
-      label: 'Member Period:',
+      label: "Member Period:",
       value: `${data?.memberStartAt} - ${data?.memberEndAt}`,
     },
-    { label: 'Type:', value: data?.type.name },
-    { label: 'Create Time:', value: data?.createdAt },
-    { label: 'Update Time:', value: data?.updatedAt },
+    { label: "Type:", value: data?.type.name },
+    { label: "Create Time:", value: data?.createdAt },
+    { label: "Update Time:", value: data?.updatedAt },
   ];
   const dataSource = data?.courses;
   return (
@@ -77,7 +77,7 @@ export default function StudentDetail(props: { id: number }) {
       <Row>
         <Col span={9}>
           <Card>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ textAlign: "center" }}>
               <Avatar
                 src={data?.avatar}
                 size={{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }}
@@ -88,7 +88,7 @@ export default function StudentDetail(props: { id: number }) {
                 <Col
                   span={12}
                   key={current.label}
-                  style={{ textAlign: 'center' }}
+                  style={{ textAlign: "center" }}
                 >
                   <b>{current.label}</b>
                   <p>{current.value}</p>
@@ -96,7 +96,7 @@ export default function StudentDetail(props: { id: number }) {
               ))}
             </Row>
             <Row>
-              <Col span={24} style={{ textAlign: 'center' }}>
+              <Col span={24} style={{ textAlign: "center" }}>
                 <b>Address</b>
                 <p>{data?.address}</p>
               </Col>
@@ -114,12 +114,12 @@ export default function StudentDetail(props: { id: number }) {
                     <Col
                       span={24}
                       key={current.label}
-                      style={{ textAlign: 'left' }}
+                      style={{ textAlign: "left" }}
                     >
                       <b
                         style={{
                           minWidth: 160,
-                          display: 'inline-block',
+                          display: "inline-block",
                         }}
                       >
                         {current.label}
