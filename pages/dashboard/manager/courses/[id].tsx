@@ -1,14 +1,4 @@
-import {
-  Card,
-  Row,
-  Col,
-  Badge,
-  Steps,
-  Collapse,
-  Table,
-  Tag,
-  Divider,
-} from "antd";
+import { Card, Row, Col, Badge, Steps, Collapse, Table, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import AppLayout from "../../../../component/layout/layout";
 import { CourseResponse, Schedule } from "../../../../lib/modal/response";
@@ -35,6 +25,10 @@ export const Heading = styled.h1`
   margin: 20px 0;
   color: purple;
   font-size: 24px;
+`;
+
+const H3 = styled.h3`
+  margin: 1em 0;
 `;
 
 const getChapterExtra = (source: Schedule, index: number) => {
@@ -166,31 +160,62 @@ export default function CourseDetail(props: { id: number }) {
     <AppLayout>
       <Row>
         <Col span={9}>
-          <CourseCard {...data} />
-          <Divider />
-          <Row>
-            {sales.map((item, index) => (
-              <Col span={6} key={index}>
-                <b>{item.value}</b>
-                <p>{item.label}</p>
-              </Col>
-            ))}
-          </Row>
+          <CourseCard {...data}>
+            <Row>
+              {sales.map((item, index) => (
+                <Col
+                  span={6}
+                  style={{
+                    marginTop: "12px",
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    border: "1px solid #f0f0f0",
+                    borderLeft: "none",
+                    borderBottom: "none",
+                    // width:{calc('100%+48px')},
+                  }}
+                  key={index}
+                >
+                  <b style={{ color: "purple", fontSize: "24px" }}>
+                    {item.value}
+                  </b>
+                  <p style={{ marginBottom: "0" }}>{item.label}</p>
+                </Col>
+              ))}
+            </Row>
+          </CourseCard>
         </Col>
         <Col span={14} offset={1}>
           <Card>
             <Heading>Course Detail</Heading>
-            <b>Create Time</b>
+
+            <H3>Create Time</H3>
             <p>{data?.createAt}</p>
-            <b>Start Time</b>
+
+            <H3>Start Time</H3>
             <p>{data?.startTime}</p>
-            <Badge status={CourseStatusBadge[data?.status] as any}>
-              <b>Status</b>
+
+            <Badge
+              status={CourseStatusBadge[data?.status] as any}
+              offset={[5, 24]}
+              dot={true}
+            >
+              <H3>Status</H3>
             </Badge>
-            <Row>
+            <Row
+              style={{
+                overflowX: "scroll",
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
+            >
               <Steps
                 size="small"
-                style={{ width: "auto" }}
+                style={{
+                  width: "auto",
+                }}
                 current={currentIndex}
               >
                 {data?.schedule.chapters.map((item) => (
@@ -198,9 +223,11 @@ export default function CourseDetail(props: { id: number }) {
                 ))}
               </Steps>
             </Row>
-            <b>Course Code</b>
+
+            <H3>Course Code</H3>
             <p>{data?.uid}</p>
-            <b>Class Time</b>
+
+            <H3>Class Time</H3>
             <Table
               pagination={false}
               size="small"
@@ -208,15 +235,17 @@ export default function CourseDetail(props: { id: number }) {
               dataSource={dataSource}
               bordered
             ></Table>
-            <b>Category</b>
+
+            <H3>Category</H3>
             <Row>
               {data?.type.map((current, index) => (
                 <Tag color={TagColor[index]}>{current.name}</Tag>
               ))}
             </Row>
-            <b>Description</b>
+
+            <H3>Description</H3>
             <p>{data?.detail}</p>
-            <b>Chapter</b>
+            <H3>Chapter</H3>
             <Collapse defaultActiveKey={data?.schedule.current}>
               {data?.schedule.chapters.map((item, index) => (
                 <Panel

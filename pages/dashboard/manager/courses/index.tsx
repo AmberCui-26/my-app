@@ -85,7 +85,9 @@ export default function FirstPost() {
               <List.Item key={item.id}>
                 <CourseCard {...item}>
                   <Link href={"/dashboard/manager/courses/" + item.id}>
-                    <Button type="primary">Read More</Button>
+                    <Button style={{ marginTop: "15px" }} type="primary">
+                      Read More
+                    </Button>
                   </Link>
                 </CourseCard>
               </List.Item>
@@ -93,10 +95,14 @@ export default function FirstPost() {
           />
         </InfiniteScroll>
         <BackTop
+          visibilityHeight={200}
+          target={() => {
+            return document.getElementById("scrollableDiv");
+          }}
           style={{
-            fontSize: 40,
+            fontSize: "40px",
             color: "#fff",
-            right: 15,
+            right: "15px",
             backgroundColor: "#DDDDDD",
           }}
         >

@@ -133,9 +133,7 @@ export default function AppLayout(props: PropsWithChildren<any>) {
           </div>
         </Header>
         <Breadcrumbs />
-        <Content style={{ width: "100%", position: "relative" }}>
-          {props.children}
-        </Content>
+        <StyledContent>{props.children}</StyledContent>
       </Layout>
     </Layout>
   );
