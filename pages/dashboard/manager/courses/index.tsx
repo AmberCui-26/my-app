@@ -2,10 +2,28 @@ import AppLayout from "../../../../component/layout/layout";
 import CourseCard from "../../../../component/courseCard/cardLayout";
 import { getCourseInfo } from "../../../../lib/services/apiService";
 import { useCallback, useEffect, useState } from "react";
-import { List, Skeleton, Divider, BackTop } from "antd";
+import { List, Skeleton, Divider, BackTop, Button } from "antd";
 import { CoursesResponse } from "../../../../lib/modal/response";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { VerticalAlignTopOutlined } from "@ant-design/icons";
+import styled from "styled-components";
+import Link from "next/link";
+
+const ToTop = styled(VerticalAlignTopOutlined)`
+  position: fixed;
+  bottom: 50px;
+  right: 15px;
+  z-index: 999;
+  font-size: 40px;
+  color: #fff;
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0.5;
+  transition: all 0.5s;
+  :hover {
+    opacity: 0.8;
+  }
+`;
 
 export default function FirstPost() {
   const [courseInfo, setCourseInfo] = useState<CoursesResponse[]>([]);
@@ -13,26 +31,25 @@ export default function FirstPost() {
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>();
 
-  const loadMoreData = () => {
+  const loadMoreData = useCallback(() => {
     if (loading) {
       return;
     }
     setLoading(true);
-    console.log("pag", page);
     const params = { page: page, limit: 20 };
     getCourseInfo(params)
       .then((res) => {
         setTotal(res.data.data.total);
         setCourseInfo([...courseInfo, ...res.data.data.courses]);
         setLoading(false);
-        setPage((prev) => prev + 1);
       })
-      .catch((error) => setLoading(false));
-  };
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+  }, [page]);
 
   useEffect(() => {
     loadMoreData();
-  }, []);
+  }, [loadMoreData]);
 
   return (
     <AppLayout>
@@ -41,11 +58,13 @@ export default function FirstPost() {
         style={{
           backgroundColor: "#fff",
           margin: "20px",
+          height: "100vh",
+          overflow: "scroll",
         }}
       >
         <InfiniteScroll
           dataLength={courseInfo.length}
-          next={loadMoreData}
+          next={() => setPage(page + 1)}
           hasMore={courseInfo.length < total}
           loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
           endMessage={<Divider plain>No More Course!</Divider>}
@@ -64,7 +83,11 @@ export default function FirstPost() {
             dataSource={courseInfo}
             renderItem={(item) => (
               <List.Item key={item.id}>
-                <CourseCard {...item} />
+                <CourseCard {...item}>
+                  <Link href={"/dashboard/manager/courses/" + item.id}>
+                    <Button type="primary">Read More</Button>
+                  </Link>
+                </CourseCard>
               </List.Item>
             )}
           />

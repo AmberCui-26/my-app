@@ -46,3 +46,38 @@ export interface CoursesResponse {
   updatedAt: string;
   type: TypeDetail[];
 }
+
+interface Sales {
+  batches: number;
+  createdAt: string;
+  earnings: number;
+  id: number;
+  paidAmount: number;
+  paidIds: number[];
+  price: number;
+  studentAmount: number;
+  updatedAt: string;
+}
+
+export interface Schedule {
+  createdAt: string;
+  current: number;
+  id: number;
+  status: number;
+  updatedAt: string;
+  chapters: Chapters[];
+  classTime: string[];
+}
+
+interface Chapters {
+  content: string;
+  createdAt: string;
+  id: number;
+  name: string;
+  order: number;
+  updatedAt: string;
+}
+export interface CourseResponse extends CoursesResponse {
+  sales: Sales;
+  schedule: Schedule;
+}

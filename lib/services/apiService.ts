@@ -61,3 +61,7 @@ export async function getStudentById(params) {
 export async function getCourseInfo(params) {
   return axiosInstance.get(baseURL + "/courses", { params });
 }
+
+export async function getCourseById(params) {
+  return axiosInstance.get(baseURL + "/courses/detail", { params });
+}
