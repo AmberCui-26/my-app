@@ -1,5 +1,5 @@
 import { Card, Row, Col, Badge, Steps, Collapse, Table, Tag } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { Children, useEffect, useState } from "react";
 import AppLayout from "../../../../component/layout/layout";
 import { CourseResponse, Schedule } from "../../../../lib/modal/response";
 import { getCourseById } from "../../../../lib/services/apiService";
@@ -31,6 +31,20 @@ const H3 = styled.h3`
   margin: 1em 0;
 `;
 
+const StyledCol = styled(Col)`
+  margin-top: 12px,
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border: 1px solid #f0f0f0;
+  border-left: none;
+  border-bottom: none;
+  :last-child {
+    border-right: none;
+  }
+`;
+
 const getChapterExtra = (source: Schedule, index: number) => {
   const activeIndex = source.chapters.findIndex(
     (item) => item.id === source.current
@@ -51,7 +65,6 @@ export default function CourseDetail(props: { id: number }) {
     const params = { id: props.id };
     getCourseById(params).then((res) => {
       const detail = res.data.data;
-      console.log(detail);
       setData(detail);
       setCurrentIndex(
         detail.schedule.chapters.findIndex(
@@ -69,6 +82,9 @@ export default function CourseDetail(props: { id: number }) {
     { label: "Earnings", value: data?.sales.earnings },
   ];
 
+  const courseTable = () => {
+    const columns = ["Sunday"];
+  };
   const columns = [
     {
       title: "Sunday",
@@ -161,28 +177,34 @@ export default function CourseDetail(props: { id: number }) {
       <Row>
         <Col span={9}>
           <CourseCard {...data}>
-            <Row>
+            <Row
+              style={{
+                width: "calc(100% + 48px)",
+                marginLeft: "-24PX",
+                marginBottom: "-24px",
+              }}
+            >
               {sales.map((item, index) => (
-                <Col
-                  span={6}
-                  style={{
-                    marginTop: "12px",
-                    display: "flex",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    border: "1px solid #f0f0f0",
-                    borderLeft: "none",
-                    borderBottom: "none",
-                    // width:{calc('100%+48px')},
-                  }}
-                  key={index}
-                >
+                // <Col
+                //   span={6}
+                //   style={{
+                //     marginTop: "12px",
+                //     display: "flex",
+                //     justifyContent: "center",
+                //     flexDirection: "column",
+                //     alignItems: "center",
+                //     border: "1px solid #f0f0f0",
+                //     borderLeft: "none",
+                //     borderBottom: "none",
+                //   }}
+                //   key={index}
+                // >
+                <StyledCol span={6} key={index}>
                   <b style={{ color: "purple", fontSize: "24px" }}>
                     {item.value}
                   </b>
                   <p style={{ marginBottom: "0" }}>{item.label}</p>
-                </Col>
+                </StyledCol>
               ))}
             </Row>
           </CourseCard>

@@ -4,18 +4,16 @@ import styled from "styled-components";
 import { PlusOutlined } from "@ant-design/icons";
 import { useCallback, useEffect, useState } from "react";
 import ModalForm from "../../../../component/modal/modal";
-import AddStudentForm from "../../../../component/addStudent/addStudentForm";
+import AddTeacherForm from "../../../../component/addTeacher/addTeacherForm";
 import { debounce } from "lodash";
-import { Student } from "../../../../lib/modal/student";
-import { CourseInfo } from "../../../../lib/modal/course";
+import { Skills, Teacher } from "../../../../lib/modal/teacher";
 import {
-  getStudents,
-  deleteStudent,
-  searchStudents,
-  addStudent,
-  editStudents,
+  getTeachers,
+  deleteTeacher,
+  searchTeachers,
+  addTeacher,
+  editTeachers,
 } from "../../../../lib/services/apiService";
-import { StudentType } from "../../../../lib/modal/type";
 import Link from "next/link";
 import { AddUserRequest, EditRequest } from "../../../../lib/modal/request";
 
@@ -40,7 +38,7 @@ export default function Dashboard() {
   const [pageSize, setPageSize] = useState(10);
   const [page, setPage] = useState(1);
   const [visible, setVisible] = useState(false);
-  const [editStudent, setEditStudent] = useState<Student>(null);
+  const [editTeacher, setEditTeacher] = useState<Teacher>(null);
   const [value, setValue] = useState("");
 
   const onShowPageChange = (current: number) => {
@@ -51,25 +49,61 @@ export default function Dashboard() {
     setPageSize(pageSize);
     setPage(current);
   };
+  const getTeacherList = useCallback(
+    (pageSize: number, page: number) => {
+      const params = { limit: pageSize, page: page };
+      getTeachers(params)
+        .then((res) => {
+          const info = res.data.data.teachers;
+          const num = res.data.data.total;
+          console.log(info);
+          setTotal(num);
+          setData(info);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    [pageSize, page]
+  );
 
-  const getStudentList = (pageSize: number, page: number) => {
-    const params = { limit: pageSize, page: page };
-    getStudents(params)
-      .then((res) => {
-        const info = res.data.data.students;
-        const num = res.data.data.total;
-        setTotal(num);
-        setData(info);
+  useEffect(() => {
+    getTeacherList(pageSize, page);
+  }, [getTeacherList]);
+
+  const onDelete = (id: number) => {
+    const params = { id };
+    deleteTeacher(params)
+      .then(() => {
+        message.success("Success");
       })
       .catch((error) => {
         console.log(error);
       });
   };
 
-  useEffect(() => {
-    getStudentList(pageSize, page);
-    // refreshStudentList();
-  }, [pageSize, page, editStudent]);
+  const onChange = useCallback(
+    debounce((event) => {
+      const nextValue = event.target.value;
+      const params = { limit: pageSize, page: page, query: nextValue };
+      searchTeachers(params)
+        .then((res) => {
+          const info = res.data.data.teachers;
+          const num = res.data.data.total;
+          setTotal(num);
+          setData(info);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }, 1000),
+    [value]
+  );
+
+  const onCancel = () => {
+    setVisible(false);
+    setEditTeacher(null);
+  };
 
   const columns = [
     {
@@ -95,7 +129,7 @@ export default function Dashboard() {
       sortDirections: ["descend", "ascend"],
       render: (name, record) => {
         return (
-          <Link href={"/dashboard/manager/students/" + record.id}>
+          <Link href={"/dashboard/manager/teachers/" + record.id}>
             <a>{name}</a>
           </Link>
         );
@@ -123,7 +157,7 @@ export default function Dashboard() {
           value: "Australia",
         },
       ],
-      onFilter: (value, record: Student) => record.country.indexOf(value) === 0,
+      onFilter: (value, record: Teacher) => record.country.indexOf(value) === 0,
     },
     {
       title: "Email",
@@ -131,70 +165,42 @@ export default function Dashboard() {
       key: "email",
     },
     {
-      title: "Selected Curriculum",
-      dataIndex: "courses",
-      render: (courses: CourseInfo[]) =>
-        courses.map((course, index: number) => {
-          if (index < courses.length - 1) {
-            return `${course.name},`;
+      title: "Skill",
+      dataIndex: "skills",
+      render: (skills: Skills[]) =>
+        skills.map((skill, index: number) => {
+          if (index < skills.length - 1) {
+            return `${skill.name},`;
           } else {
-            return `${course.name}`;
+            return `${skill.name}`;
           }
         }),
     },
     {
-      title: "Student Type",
-      dataIndex: "type",
-      key: "type",
-      render: (type: StudentType) => {
-        if (type) {
-          return type["name"];
-        } else {
-          return " ";
-        }
-      },
-      filters: [
-        {
-          text: "developer",
-          value: "developer",
-        },
-        {
-          text: "tester",
-          value: "tester",
-        },
-      ],
-      onFilter: (value, record) => {
-        if (record.type) {
-          return record.type.name.indexOf(value) === 0;
-        }
-      },
+      title: "Course Amount",
+      dataIndex: "courseAmount",
+      key: "courseAmount",
+      render: (amount: number) => `${amount}`,
     },
     {
-      title: "Join Time",
-      dataIndex: "createdAt",
-      key: "createTime",
-      render: (createdAt) => {
-        const date = new Date();
-        const year = date.getFullYear();
-        const createdYear = createdAt.substring(0, 4);
-        const gap = year - createdYear;
-        return gap + " years ago";
-      },
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+      render: (phone) => `${phone}`,
     },
     {
       title: "Action",
       key: "action",
-      render: (text, record: Student) => (
+      render: (text, record: Teacher) => (
         <Space>
           <a
             onClick={() => {
-              setEditStudent(record);
+              setEditTeacher(record);
               setVisible(true);
             }}
           >
             Edit
           </a>
-
           <Popconfirm
             title="Are you sure to delete？"
             okText="Confirm"
@@ -209,45 +215,6 @@ export default function Dashboard() {
       ),
     },
   ];
-
-  const onDelete = (id: number) => {
-    const params = { id };
-    deleteStudent(params)
-      .then(() => {
-        message.success("Success");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const onChange = useCallback(
-    debounce((event) => {
-      const nextValue = event.target.value;
-      const params = { limit: pageSize, page: page, query: nextValue };
-      searchStudents(params)
-        .then((res) => {
-          const info = res.data.data.students;
-          const num = res.data.data.total;
-          setTotal(num);
-          setData(info);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }, 1000),
-    [value]
-  );
-
-  const onCancel = () => {
-    setVisible(false);
-    setEditStudent(null);
-  };
-
-  const refreshStudentList = () => {
-    data.splice(editStudent?.id - 1, 1, editStudent);
-  };
-
   return (
     <AppLayout>
       <div
@@ -266,10 +233,7 @@ export default function Dashboard() {
             onFormFinish={(name, { values }) => {
               setVisible(false);
               if (name === "studentForm") {
-                // const params = {
-                //   ...values,
-                // };
-                addStudent(values as AddUserRequest)
+                addTeacher(values as AddUserRequest)
                   .then(() => {
                     message.success("Success");
                   })
@@ -279,18 +243,18 @@ export default function Dashboard() {
               } else if (name === "editStudentForm") {
                 const params = {
                   ...values,
-                  id: editStudent.id,
+                  id: editTeacher.id,
                 };
-                editStudents(params as EditRequest)
+                editTeachers(params as EditRequest)
                   .then((res) => {
-                    setEditStudent(res.data.data);
+                    setEditTeacher(res.data.data);
                     message.success("Success");
                   })
                   .catch((error) => {
                     console.log(error);
                   });
               }
-              refreshStudentList();
+              // refreshStudentList();
             }}
           >
             <StyledButton
@@ -299,10 +263,10 @@ export default function Dashboard() {
               icon={<PlusOutlined />}
               onClick={() => {
                 setVisible(true);
-                setEditStudent(null);
+                setEditTeacher(null);
               }}
             >
-              Add
+              Add User
             </StyledButton>
 
             <StyledSearch
@@ -312,16 +276,15 @@ export default function Dashboard() {
             />
 
             <ModalForm
-              titleName={!!editStudent ? "Edit Student" : "Add Student"}
+              titleName={!!editTeacher ? "Edit Teacher" : "Add Teacher"}
               visible={visible}
               onCancel={onCancel}
             >
-              <AddStudentForm studentInfo={editStudent} />
+              <AddTeacherForm teacherInfo={editTeacher} />
             </ModalForm>
           </Form.Provider>
         </div>
-        {/* </div> */}
-        <StyledTable
+        <Table
           pagination={{
             total: total,
             onChange: onShowPageChange,

@@ -1,11 +1,11 @@
 import axios from "axios";
 import {
-  AddStudentRequest,
-  DeleteStudentRequest,
-  EditStudentRequest,
-  GetStudentListRequest,
+  AddUserRequest,
+  DeleteRequest,
+  EditRequest,
+  GetListRequest,
   LoginRequest,
-  SearchStudentRequest,
+  SearchRequest,
 } from "../modal/request";
 
 const baseURL = "https://cms.chtoma.com/api";
@@ -34,28 +34,52 @@ export async function login(params: LoginRequest) {
   return axiosInstance.post(baseURL + "/login", params);
 }
 
-export async function getStudents(params: GetStudentListRequest) {
+export async function getStudents(params: GetListRequest) {
   return axiosInstance.get(baseURL + "/students", { params });
 }
 
-export async function deleteStudent(params: DeleteStudentRequest) {
+export async function getTeachers(params: GetListRequest) {
+  return axiosInstance.get(baseURL + "/teachers", { params });
+}
+
+export async function deleteStudent(params: DeleteRequest) {
   return axiosInstance.delete(baseURL + `/students/${params}`);
 }
 
-export async function searchStudents(params: SearchStudentRequest) {
+export async function deleteTeacher(params: DeleteRequest) {
+  return axiosInstance.delete(baseURL + `/teachers/${params}`);
+}
+
+export async function searchStudents(params: SearchRequest) {
   return axiosInstance.get(baseURL + "/students", { params });
 }
 
-export async function addStudent(params: AddStudentRequest) {
+export async function searchTeachers(params: SearchRequest) {
+  return axiosInstance.get(baseURL + "/teachers", { params });
+}
+
+export async function addStudent(params: AddUserRequest) {
   return axiosInstance.post(baseURL + "/students", params);
 }
 
-export async function editStudents(params: EditStudentRequest) {
+export async function addTeacher(params: AddUserRequest) {
+  return axiosInstance.post(baseURL + "/teachers", params);
+}
+
+export async function editStudents(params: EditRequest) {
   return axiosInstance.put(baseURL + "/students", params);
+}
+
+export async function editTeachers(params: EditRequest) {
+  return axiosInstance.put(baseURL + "/teachers", params);
 }
 
 export async function getStudentById(params) {
   return axiosInstance.get(baseURL + "/students/" + params);
+}
+
+export async function getTeacherById(params) {
+  return axiosInstance.get(baseURL + "/teachers/" + params);
 }
 
 export async function getCourseInfo(params) {

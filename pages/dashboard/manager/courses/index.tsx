@@ -9,22 +9,6 @@ import { VerticalAlignTopOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import Link from "next/link";
 
-const ToTop = styled(VerticalAlignTopOutlined)`
-  position: fixed;
-  bottom: 50px;
-  right: 15px;
-  z-index: 999;
-  font-size: 40px;
-  color: #fff;
-  padding: 5px;
-  background: rgba(0, 0, 0, 0.3);
-  opacity: 0.5;
-  transition: all 0.5s;
-  :hover {
-    opacity: 0.8;
-  }
-`;
-
 export default function FirstPost() {
   const [courseInfo, setCourseInfo] = useState<CoursesResponse[]>([]);
   const [loading, setLoading] = useState(false);

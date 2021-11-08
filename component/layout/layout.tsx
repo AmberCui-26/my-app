@@ -16,16 +16,6 @@ import { getActiveKey } from "../../lib/modal/side-nav";
 
 const { Header, Sider, Content } = Layout;
 
-const StyledLayoutHeader = styled(Header)`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  padding: 0;
-`;
-
 const Logo = styled.div`
   height: 64px;
   display: inline-flex;

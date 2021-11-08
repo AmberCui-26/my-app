@@ -8,23 +8,23 @@ export interface LoginRequest {
   email: string;
 }
 
-export interface GetStudentListRequest {
+export interface GetListRequest {
   limit: number;
   page: number;
 }
 
-export interface DeleteStudentRequest {
+export interface DeleteRequest {
   id: number;
 }
 
-export interface AddStudentRequest {
+export interface AddUserRequest {
   name: string;
   email: string;
   type: number;
   country: string;
 }
 
-export interface EditStudentRequest {
+export interface EditRequest {
   name: string;
   email: string;
   type: number;
@@ -32,7 +32,7 @@ export interface EditStudentRequest {
   id: number;
 }
 
-export interface SearchStudentRequest {
+export interface SearchRequest {
   limit: number;
   page: number;
   query: string;

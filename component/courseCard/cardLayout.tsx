@@ -3,12 +3,14 @@ import { HeartFilled, UserOutlined } from "@ant-design/icons";
 import { CoursesResponse } from "../../lib/modal/response";
 import styled from "styled-components";
 import { PropsWithChildren } from "react";
+import Link from "next/link";
 
 const StyledDivider = styled(Divider)`
   margin: 7px 0;
 `;
 
 export default function CourseCard(props: PropsWithChildren<CoursesResponse>) {
+  console.log(props.teacherName);
   return (
     <Card cover={<img src={props.cover} />}>
       <Row>
@@ -38,7 +40,9 @@ export default function CourseCard(props: PropsWithChildren<CoursesResponse>) {
           <span>Teacher:</span>
         </Col>
         <Col>
-          <b>{props.teacherName}</b>
+          <Link href={"/dashboard/manager"}>
+            <a>{props.teacherName}</a>
+          </Link>
         </Col>
       </Row>
       <StyledDivider />
