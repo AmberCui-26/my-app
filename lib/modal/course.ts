@@ -33,3 +33,13 @@ export enum CourseStatusColor {
   "green",
   "orange",
 }
+
+export interface CourseType {
+  name: string;
+  id: number;
+}
+
+export interface UpdateCourse {
+  chapters: [{ name: string; content: string }];
+  classTime: [{ weekday: string; time: Date }];
+}

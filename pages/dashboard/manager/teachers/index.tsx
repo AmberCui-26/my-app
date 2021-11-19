@@ -16,6 +16,7 @@ import {
 } from "../../../../lib/services/apiService";
 import Link from "next/link";
 import { AddUserRequest, EditRequest } from "../../../../lib/modal/request";
+import { SortOrder } from "antd/lib/table/interface";
 
 const { Search } = Input;
 
@@ -56,7 +57,6 @@ export default function Dashboard() {
         .then((res) => {
           const info = res.data.data.teachers;
           const num = res.data.data.total;
-          console.log(info);
           setTotal(num);
           setData(info);
         })
@@ -115,7 +115,7 @@ export default function Dashboard() {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      sorter: (a, b) => {
+      sorter: (a: { name: string }, b: { name: string }) => {
         var nameA = a.name.toUpperCase();
         var nameB = b.name.toUpperCase();
         if (nameA < nameB) {
@@ -126,7 +126,7 @@ export default function Dashboard() {
         }
         return 0;
       },
-      sortDirections: ["descend", "ascend"],
+      sortDirections: ["descend", "ascend"] as SortOrder[],
       render: (name, record) => {
         return (
           <Link href={"/dashboard/manager/teachers/" + record.id}>

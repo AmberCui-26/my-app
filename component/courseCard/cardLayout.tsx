@@ -10,7 +10,6 @@ const StyledDivider = styled(Divider)`
 `;
 
 export default function CourseCard(props: PropsWithChildren<CoursesResponse>) {
-  console.log(props.teacherName);
   return (
     <Card cover={<img src={props.cover} />}>
       <Row>

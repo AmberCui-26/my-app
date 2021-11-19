@@ -18,6 +18,7 @@ import {
 import { StudentType } from "../../../../lib/modal/type";
 import Link from "next/link";
 import { AddUserRequest, EditRequest } from "../../../../lib/modal/request";
+import { SortOrder } from "antd/lib/table/interface";
 
 const { Search } = Input;
 
@@ -92,7 +93,7 @@ export default function Dashboard() {
         }
         return 0;
       },
-      sortDirections: ["descend", "ascend"],
+      sortDirections: ["descend", "ascend"] as SortOrder[],
       render: (name, record) => {
         return (
           <Link href={"/dashboard/manager/students/" + record.id}>

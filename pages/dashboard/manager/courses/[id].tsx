@@ -32,7 +32,7 @@ const H3 = styled.h3`
 `;
 
 const StyledCol = styled(Col)`
-  margin-top: 12px,
+  margin-top: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,6 +42,20 @@ const StyledCol = styled(Col)`
   border-bottom: none;
   :last-child {
     border-right: none;
+  }
+`;
+
+const StepsRow = styled(Row)`
+  overflow-x: scroll;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  .ant-steps-item-title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 6em;
   }
 `;
 
@@ -57,9 +71,8 @@ const getChapterExtra = (source: Schedule, index: number) => {
 };
 
 export default function CourseDetail(props: { id: number }) {
-  const [data, setData] = useState<CourseResponse>();
+  const [data, setData] = useState<CourseResponse>(null);
   const [currentIndex, setCurrentIndex] = useState<number>();
-  const [dataSource, setDataSource] = useState();
 
   useEffect(() => {
     const params = { id: props.id };
@@ -71,7 +84,6 @@ export default function CourseDetail(props: { id: number }) {
           (item) => item.id === detail.schedule.current
         )
       );
-      setDataSource(detail.schedule.classTime);
     });
   }, []);
 
@@ -82,95 +94,24 @@ export default function CourseDetail(props: { id: number }) {
     { label: "Earnings", value: data?.sales.earnings },
   ];
 
-  const courseTable = () => {
-    const columns = ["Sunday"];
-  };
-  const columns = [
-    {
-      title: "Sunday",
-      dataIndex: "Sunday",
-      key: "Sunday",
-      render: (_1, record) => {
-        const day = record.split(" ")[0];
-        const result = record.split(" ")[1];
-        if (day === "Sunday") {
-          return result;
-        }
-      },
-    },
-    {
-      title: "Monday",
-      dataIndex: "Monday",
-      key: "Monday",
-      render: (_1, record) => {
-        const day = record.split(" ")[0];
-        const result = record.split(" ")[1];
-        if (day === "Monday") {
-          return result;
-        }
-      },
-    },
-    {
-      title: "Tuesday",
-      dataIndex: "Tuesday",
-      key: "Tuesday",
-      render: (_1, record) => {
-        const day = record.split(" ")[0];
-        const result = record.split(" ")[1];
-        if (day === "Tuesday") {
-          return result;
-        }
-      },
-    },
-    {
-      title: "Wednesday",
-      dataIndex: "Wednesday",
-      key: "Wednesday",
-      render: (_1, record) => {
-        const day = record.split(" ")[0];
-        const result = record.split(" ")[1];
-        if (day === "Wednesday") {
-          return result;
-        }
-      },
-    },
-    {
-      title: "Thursday",
-      dataIndex: "Thursday",
-      key: "Thursday",
-      render: (_1, record) => {
-        const day = record.split(" ")[0];
-        const result = record.split(" ")[1];
-        if (day === "Thursday") {
-          return result;
-        }
-      },
-    },
-    {
-      title: "Friday",
-      dataIndex: "Friday",
-      key: "Friday",
-      render: (_1, record) => {
-        const day = record.split(" ")[0];
-        const result = record.split(" ")[1];
-        if (day === "Friday") {
-          return result;
-        }
-      },
-    },
-    {
-      title: "Saturday",
-      dataIndex: "Saturday",
-      key: "Saturday",
-      render: (_1, record) => {
-        const day = record.split(" ")[0];
-        const result = record.split(" ")[1];
-        if (day === "Saturday") {
-          return result;
-        }
-      },
-    },
+  const week = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
   ];
+  const columns = week.map((title: string, index) => {
+    const target: string =
+      data?.schedule.classTime.find((item) =>
+        item.toLocaleLowerCase().includes(title.toLocaleLowerCase())
+      ) || "";
+    const time = target.split(" ")[1];
+    return { title, key: index, render: () => time };
+  });
+  const dataSource = new Array(1).fill({ id: 0 });
 
   return (
     <AppLayout>
@@ -185,20 +126,6 @@ export default function CourseDetail(props: { id: number }) {
               }}
             >
               {sales.map((item, index) => (
-                // <Col
-                //   span={6}
-                //   style={{
-                //     marginTop: "12px",
-                //     display: "flex",
-                //     justifyContent: "center",
-                //     flexDirection: "column",
-                //     alignItems: "center",
-                //     border: "1px solid #f0f0f0",
-                //     borderLeft: "none",
-                //     borderBottom: "none",
-                //   }}
-                //   key={index}
-                // >
                 <StyledCol span={6} key={index}>
                   <b style={{ color: "purple", fontSize: "24px" }}>
                     {item.value}
@@ -226,13 +153,7 @@ export default function CourseDetail(props: { id: number }) {
             >
               <H3>Status</H3>
             </Badge>
-            <Row
-              style={{
-                overflowX: "scroll",
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-              }}
-            >
+            <StepsRow>
               <Steps
                 size="small"
                 style={{
@@ -244,7 +165,7 @@ export default function CourseDetail(props: { id: number }) {
                   <Steps.Step title={item.name} key={item.id}></Steps.Step>
                 ))}
               </Steps>
-            </Row>
+            </StepsRow>
 
             <H3>Course Code</H3>
             <p>{data?.uid}</p>

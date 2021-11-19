@@ -1,5 +1,6 @@
 import axios from "axios";
 import {
+  AddCourse,
   AddUserRequest,
   DeleteRequest,
   EditRequest,
@@ -88,4 +89,24 @@ export async function getCourseInfo(params) {
 
 export async function getCourseById(params) {
   return axiosInstance.get(baseURL + "/courses/detail", { params });
+}
+
+export async function getCoursesType() {
+  return axiosInstance.get(baseURL + "/courses/type");
+}
+
+export async function searchTeacher(params) {
+  return axiosInstance.get(baseURL + "/teachers", { params });
+}
+
+export async function getCourseCode() {
+  return axiosInstance.get(baseURL + "/courses/code");
+}
+
+export async function addCourse(params: AddCourse) {
+  return axiosInstance.post(baseURL + "/courses", params);
+}
+
+export async function updateCourse(params) {
+  return axiosInstance.put(baseURL + "/courses/schedule", params);
 }

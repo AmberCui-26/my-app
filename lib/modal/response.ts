@@ -81,3 +81,23 @@ export interface CourseResponse extends CoursesResponse {
   sales: Sales;
   schedule: Schedule;
 }
+
+export interface AddCourse {
+  cover: string;
+  createdAt: string;
+  detail: string;
+  duration: number;
+  durationUnit: number;
+  id: number;
+  maxStudents: number;
+  name: string;
+  price: number;
+  scheduleId: number;
+  star: number;
+  startTime: string;
+  teacherId: number;
+  teacherName: string;
+  type: [id: number, name: string];
+  uid: string;
+  updatedAt: string;
+}

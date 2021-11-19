@@ -37,3 +37,17 @@ export interface SearchRequest {
   page: number;
   query: string;
 }
+
+export interface AddCourse {
+  cover: string;
+  detail: string;
+  duration: number;
+  durationUnit: number;
+  maxStudents: number;
+  name: string;
+  price: number;
+  startTime: string;
+  teacherId: string;
+  type: [];
+  uid: string;
+}

@@ -6,7 +6,6 @@ import { List, Skeleton, Divider, BackTop, Button } from "antd";
 import { CoursesResponse } from "../../../../lib/modal/response";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { VerticalAlignTopOutlined } from "@ant-design/icons";
-import styled from "styled-components";
 import Link from "next/link";
 
 export default function FirstPost() {
