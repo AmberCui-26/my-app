@@ -22,6 +22,14 @@ import moment from "moment";
 import ImgCrop from "antd-img-crop";
 import { InboxOutlined } from "@ant-design/icons";
 import { AddCourse } from "../../lib/modal/response";
+import styled from "styled-components";
+
+const UploadItem = styled(Form.Item)`
+  .ant-upload.ant-upload-select.ant-upload-select-picture-card {
+    height: 290px;
+    width: 357px;
+  }
+`;
 
 const { Option } = Select;
 
@@ -242,7 +250,7 @@ export default function AddCourseForm(props: AddCourseFormProps) {
             </Col>
 
             <Col span={12}>
-              <Form.Item name="cover" label="Cover">
+              <UploadItem name="cover" label="Cover">
                 <ImgCrop rotate>
                   <Upload
                     className="2"
@@ -256,16 +264,21 @@ export default function AddCourseForm(props: AddCourseFormProps) {
                     {fileList.length < 1 && (
                       <div>
                         <p className="ant-upload-drag-icon">
-                          <InboxOutlined />
+                          <InboxOutlined
+                            style={{ fontSize: "3em", color: "#288aeb" }}
+                          />
                         </p>
-                        <p className="ant-upload-text">
+                        <p
+                          className="ant-upload-text"
+                          style={{ fontSize: "1.7em", color: "gray" }}
+                        >
                           Click or drag file to this area to upload
                         </p>
                       </div>
                     )}
                   </Upload>
                 </ImgCrop>
-              </Form.Item>
+              </UploadItem>
             </Col>
           </Row>
         </Col>

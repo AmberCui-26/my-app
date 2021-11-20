@@ -9,8 +9,8 @@ import Link from "next/link";
 
 const { Step } = Steps;
 
-export default function App() {
-  const [current, setCurrent] = useState(0);
+export default function Page() {
+  const [current, setCurrent] = useState<number>(0);
   const [availableStep, setAvailableStep] = useState<number[]>([0]);
   const [courseId, setCourseId] = useState<number>();
   const [scheduleId, setScheduleId] = useState<number>();
@@ -41,9 +41,8 @@ export default function App() {
             <Button type="primary">Go Course</Button>
           </Link>
           <Button
-            onClick={() => {
-              router.reload();
-            }}
+            style={{ marginLeft: "20px" }}
+            onClick={() => router.reload()}
           >
             Create Again
           </Button>
