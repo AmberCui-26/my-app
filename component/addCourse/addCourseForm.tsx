@@ -16,11 +16,12 @@ import {
   getCourseCode,
   getCoursesType,
   searchTeacher,
+  updateCourses,
 } from "../../lib/services/apiService";
 import { CourseType } from "../../lib/modal/course";
 import moment from "moment";
 import ImgCrop from "antd-img-crop";
-import { InboxOutlined } from "@ant-design/icons";
+import { InboxOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { AddCourse } from "../../lib/modal/response";
 import styled from "styled-components";
 
@@ -29,34 +30,44 @@ const UploadItem = styled(Form.Item)`
     height: 290px;
     width: 357px;
   }
+  .ant-upload-list-item.ant-upload-list-item-done.ant-upload-list-item-list-type-picture-card {
+    height: 290px;
+    width: 357px;
+  }
 `;
 
 const { Option } = Select;
 
 interface AddCourseFormProps {
+  course?: AddCourse;
   onSuccess?: (course: AddCourse) => void;
 }
+
 export default function AddCourseForm(props: AddCourseFormProps) {
   const [form] = Form.useForm();
+  // const [added, setAdded] = useState<boolean>(props.course === undefined);
   const [courseType, setCourseType] = useState<CourseType[]>([]);
   const [teachers, setTeachers] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const [isUploading, setIsUploading] = useState<Boolean>(true);
 
   const onSearch = (value) => {
     const params = { query: value };
-    searchTeacher(params)
-      .then((res) => {
-        const data = res.data.data.teachers;
-        if (!!data) {
-          setTeachers(data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    searchTeacher(params).then((res) => {
+      const data = res.data.data.teachers;
+      if (!!data) {
+        setTeachers(data);
+      }
+    });
   };
 
-  const onChange = ({ fileList: newFileList }) => {
+  const onChange = ({ fileList: newFileList, file }) => {
+    const { status } = file;
+    if (status === "uploading") {
+      setIsUploading(true);
+    } else {
+      setIsUploading(false);
+    }
     setFileList(newFileList);
   };
 
@@ -77,16 +88,18 @@ export default function AddCourseForm(props: AddCourseFormProps) {
 
   const onFinish = (values: any) => {
     const data = moment(values.startTime).format("YYYY-MM-DD");
-    console.log("Received values of form: ", { ...values, startTime: data });
     const params = { ...values, startTime: data };
-    addCourse(params)
-      .then((res) => {
-        message.success("Success");
-        props.onSuccess(res.data.data);
-      })
-      .catch((error) => {
-        message.error(error);
-      });
+    console.log(111);
+    // updateCourses({ ...params, id: props.course.id }).then((res) =>
+    //   console.log(res)
+    // );
+    addCourse(params).then((res) => {
+      message.success("Success");
+      props.onSuccess(res.data.data);
+    });
+    // if (!!data && !props.course) {
+    //   setAdded(false);
+    // }
   };
 
   useEffect(() => {
@@ -94,10 +107,25 @@ export default function AddCourseForm(props: AddCourseFormProps) {
       const data = res.data.data;
       setCourseType(data);
     });
+    // if (!added) {
     getCourseCode().then((res) => {
       form.setFieldsValue({ uid: res.data.data });
     });
+    // }
   }, []);
+
+  useEffect(() => {
+    if (!!props.course) {
+      const values = {
+        ...props.course,
+        type: props.course.type.map((item) => item.id),
+        teacherId: props.course.teacherName,
+        startTime: moment(props.course.startTime),
+      };
+      form.setFieldsValue(values);
+      setFileList([{ name: "cover", url: props.course.cover }]);
+    }
+  }, [props.course]);
 
   return (
     <Form
@@ -154,7 +182,11 @@ export default function AddCourseForm(props: AddCourseFormProps) {
             </Col>
 
             <Col span={8}>
-              <Form.Item label="Course Code" name="uid">
+              <Form.Item
+                label="Course Code"
+                name="uid"
+                rules={[{ required: true }]}
+              >
                 <Input disabled type="text" style={{ width: "100%" }} />
               </Form.Item>
             </Col>
@@ -197,7 +229,7 @@ export default function AddCourseForm(props: AddCourseFormProps) {
             <InputNumber min={1} max={10} style={{ width: "100%" }} />
           </Form.Item>
 
-          <Form.Item label="Duration">
+          <Form.Item label="Duration" rules={[{ required: true }]}>
             <Input.Group compact>
               <Form.Item
                 rules={[
@@ -215,7 +247,7 @@ export default function AddCourseForm(props: AddCourseFormProps) {
               <Form.Item
                 noStyle
                 name="durationUnit"
-                rules={[{ required: true }]}
+                // rules={[{ required: true }]}
               >
                 <Select defaultValue={2} style={{ width: "20%" }}>
                   <Option value={1}>Year</Option>
@@ -245,7 +277,7 @@ export default function AddCourseForm(props: AddCourseFormProps) {
                   },
                 ]}
               >
-                <Input.TextArea rows={6} style={{ height: "290px" }} />
+                <Input.TextArea rows={5} style={{ height: "290px" }} />
               </Form.Item>
             </Col>
 
@@ -279,6 +311,16 @@ export default function AddCourseForm(props: AddCourseFormProps) {
                   </Upload>
                 </ImgCrop>
               </UploadItem>
+
+              {isUploading && (
+                <CloseCircleOutlined
+                  style={{ color: "red" }}
+                  onClick={() => {
+                    setIsUploading(false);
+                    setFileList([]);
+                  }}
+                />
+              )}
             </Col>
           </Row>
         </Col>
@@ -286,7 +328,8 @@ export default function AddCourseForm(props: AddCourseFormProps) {
 
       <Row>
         <Button style={{ marginLeft: "12px" }} type="primary" htmlType="submit">
-          Create Course
+          {/* {added ? "Create Course" : " Update Course"} */}
+          Update Course
         </Button>
       </Row>
     </Form>

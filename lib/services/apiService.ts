@@ -110,3 +110,11 @@ export async function addCourse(params: AddCourse) {
 export async function updateCourse(params) {
   return axiosInstance.put(baseURL + "/courses/schedule", params);
 }
+
+export async function searchCourses(params) {
+  return axiosInstance.get(baseURL + "/courses", { params });
+}
+
+export async function updateCourses(params) {
+  return axiosInstance.put(baseURL + "/courses", params);
+}

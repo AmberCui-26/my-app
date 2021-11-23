@@ -22,9 +22,9 @@ const Heading = styled.h1`
 `;
 
 interface CourseScheduleFormProps {
-  courseId: number;
-  scheduleId: number;
-  onSuccess: () => void;
+  courseId?: number;
+  scheduleId?: number;
+  onSuccess?: () => void;
 }
 
 const initialValues = {

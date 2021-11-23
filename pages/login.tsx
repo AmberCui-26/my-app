@@ -35,11 +35,13 @@ export default function LoginPage() {
     };
     login(params)
       .then((res) => {
+        console.log(res);
         const token = res.data.data.token;
         localStorage.setItem("token", token);
-        console.log(res.data.data.role);
         const role = res.data.data.role;
         localStorage.setItem("role", role);
+        const userId = res.data.data.userId;
+        localStorage.setItem("userId", userId);
         router.push("/dashboard/manager");
       })
       .catch((error) => {
